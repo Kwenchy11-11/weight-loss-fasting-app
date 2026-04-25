@@ -15,8 +15,7 @@ interface FastingSession {
   mode: FastingMode;
   startTime: string;
   targetEndTime: string;
-  isActive: boolean;
-  duration?: number;
+  status: string;
   endTime?: string;
 }
 
@@ -227,8 +226,13 @@ export default function FastingPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-medium">
-                      {session.duration
-                        ? `${Math.floor(session.duration / 60)}h ${session.duration % 60}m`
+                      {session.endTime
+                        ? (() => {
+                            const start = new Date(session.startTime).getTime();
+                            const end = new Date(session.endTime).getTime();
+                            const duration = Math.floor((end - start) / (1000 * 60));
+                            return `${Math.floor(duration / 60)}h ${duration % 60}m`;
+                          })()
                         : "—"}
                     </p>
                     <p className="text-sm text-gray-600">Duration</p>

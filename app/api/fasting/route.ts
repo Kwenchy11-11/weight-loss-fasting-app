@@ -14,7 +14,7 @@ export async function GET() {
     const activeSession = await prisma.fastingSession.findFirst({
       where: {
         userId: session.user.id,
-        isActive: true,
+        status: "active",
       },
       orderBy: {
         startTime: "desc",
@@ -24,7 +24,7 @@ export async function GET() {
     const sessions = await prisma.fastingSession.findMany({
       where: {
         userId: session.user.id,
-        isActive: false,
+        status: { not: "active" },
       },
       orderBy: {
         startTime: "desc",
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     const existingSession = await prisma.fastingSession.findFirst({
       where: {
         userId: session.user.id,
-        isActive: true,
+        status: "active",
       },
     });
 
@@ -75,6 +75,7 @@ export async function POST(req: NextRequest) {
     }
 
     const fastingHours = mode === "OMAD" ? 23 : 20;
+    const eatingHours = mode === "OMAD" ? 1 : 4;
     const startTime = new Date();
     const targetEndTime = new Date(startTime.getTime() + fastingHours * 60 * 60 * 1000);
 
@@ -82,9 +83,11 @@ export async function POST(req: NextRequest) {
       data: {
         userId: session.user.id,
         mode,
+        fastingHours,
+        eatingHours,
         startTime,
         targetEndTime,
-        isActive: true,
+        status: "active",
       },
     });
 
@@ -109,7 +112,7 @@ export async function PATCH(req: NextRequest) {
     const activeSession = await prisma.fastingSession.findFirst({
       where: {
         userId: session.user.id,
-        isActive: true,
+        status: "active",
       },
     });
 
@@ -121,18 +124,14 @@ export async function PATCH(req: NextRequest) {
     }
 
     const endTime = new Date();
-    const duration = Math.floor(
-      (endTime.getTime() - activeSession.startTime.getTime()) / (1000 * 60)
-    );
 
     const updatedSession = await prisma.fastingSession.update({
       where: {
         id: activeSession.id,
       },
       data: {
-        isActive: false,
+        status: "completed",
         endTime,
-        duration,
       },
     });
 

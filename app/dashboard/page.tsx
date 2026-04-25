@@ -11,7 +11,7 @@ async function getDashboardData(userId: string) {
   const activeSession = await prisma.fastingSession.findFirst({
     where: {
       userId,
-      isActive: true,
+      status: "active",
     },
     orderBy: {
       startTime: "desc",
@@ -30,7 +30,7 @@ async function getDashboardData(userId: string) {
   const totalSessions = await prisma.fastingSession.count({
     where: {
       userId,
-      isActive: false,
+      status: { not: "active" },
     },
   });
 
