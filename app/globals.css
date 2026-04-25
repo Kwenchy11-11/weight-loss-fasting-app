@@ -1,332 +1,310 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  /* Kawaii Pastel Pink Color Palette */
-  --background: #FFF5F7;
-  --foreground: #5D4E6D;
-  
-  /* Primary - Soft Pink */
-  --primary: #FF8FA3;
-  --primary-foreground: #FFFFFF;
-  --primary-light: #FFE4E9;
-  --primary-dark: #FF6B85;
-  
-  /* Secondary - Soft Purple/Lavender */
-  --secondary: #B8A9C9;
-  --secondary-foreground: #FFFFFF;
-  --secondary-light: #E8E0F0;
-  
-  /* Accent - Soft Coral/Peach */
-  --accent: #FFB4A2;
-  --accent-foreground: #FFFFFF;
-  --accent-light: #FFD5CC;
-  
-  /* Success - Soft Mint */
-  --success: #A8E6CF;
-  --success-foreground: #2D5A4A;
-  --success-light: #D4F5E9;
-  
-  /* Warning - Soft Yellow */
-  --warning: #FFEAA7;
-  --warning-foreground: #8B7355;
-  
-  /* Neutral - Soft Warm Tones */
-  --muted: #F8F0F3;
-  --muted-foreground: #8B7B8B;
-  --border: #F0D5DC;
-  --card: #FFFFFF;
-  --card-foreground: #5D4E6D;
-  
-  /* Semantic Colors */
-  --destructive: #FF8FA3;
-  --destructive-foreground: #FFFFFF;
-  
-  /* Kawaii Gradients */
-  --gradient-kawaii: linear-gradient(135deg, #FFF5F7 0%, #FFE4E9 50%, #FFD5E5 100%);
-  --gradient-pink: linear-gradient(135deg, #FF8FA3 0%, #FFB4C2 100%);
-  --gradient-lavender: linear-gradient(135deg, #B8A9C9 0%, #D4C4E0 100%);
-  --gradient-peach: linear-gradient(135deg, #FFB4A2 0%, #FFD5CC 100%);
-  --gradient-mint: linear-gradient(135deg, #A8E6CF 0%, #D4F5E9 100%);
+@layer base {
+  :root {
+    /* Exact Colors from Reference Image */
+    --background: 340 100% 98%;
+    --foreground: 340 20% 30%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 340 20% 30%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 340 20% 30%;
+    
+    /* Primary Pink - ชมพูหลัก */
+    --primary: 340 100% 75%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - สีรอง */
+    --secondary: 340 30% 90%;
+    --secondary-foreground: 340 20% 40%;
+    
+    --muted: 340 30% 96%;
+    --muted-foreground: 340 10% 50%;
+    
+    /* Accent colors from reference */
+    --accent: 30 100% 85%;
+    --accent-foreground: 340 20% 30%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 340 50% 90%;
+    --input: 340 50% 90%;
+    --ring: 340 100% 75%;
+    
+    --radius: 1.5rem;
+    
+    /* Custom colors from reference */
+    --pink-light: #FFE4EC;
+    --pink-medium: #FFB6C1;
+    --pink-dark: #FF69B4;
+    --pink-primary: #FF8FA3;
+    --cream: #FFF5E1;
+    --yellow-soft: #FFE4B5;
+    --mint: #98FB98;
+    --lavender: #E6E6FA;
+    --coral: #FFB4A2;
+    --rose-gold: #D4A574;
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Prompt', 'Kanit', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-}
-
-/* Kawaii Card Styling */
+/* Kawaii Card - Exact from reference */
 .kawaii-card {
-  background: #FFFFFF;
-  border: 2px solid var(--border);
+  @apply bg-white rounded-3xl;
   box-shadow: 
-    0 8px 32px rgba(255, 143, 163, 0.15),
-    0 2px 8px rgba(255, 143, 163, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border-radius: 24px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    0 4px 20px rgba(255, 143, 163, 0.12),
+    0 2px 8px rgba(255, 143, 163, 0.08);
+  border: 1px solid rgba(255, 182, 193, 0.3);
 }
 
-.kawaii-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 
-    0 12px 40px rgba(255, 143, 163, 0.2),
-    0 4px 12px rgba(255, 143, 163, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+/* Circular Progress - For fasting timer */
+.circular-progress {
+  position: relative;
+  width: 200px;
+  height: 200px;
 }
 
-/* Kawaii Button Styling */
-.kawaii-button {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+.circular-progress svg {
+  transform: rotate(-90deg);
+}
+
+.circular-progress-bg {
+  fill: none;
+  stroke: #FFE4EC;
+  stroke-width: 12;
+}
+
+.circular-progress-bar {
+  fill: none;
+  stroke: url(#gradient-pink);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+/* Gradient definitions */
+.gradient-pink {
+  background: linear-gradient(135deg, #FF8FA3 0%, #FFB6C1 50%, #FFC0CB 100%);
+}
+
+.gradient-coral {
+  background: linear-gradient(135deg, #FFB4A2 0%, #FF9A8B 100%);
+}
+
+.gradient-mint {
+  background: linear-gradient(135deg, #98FB98 0%, #90EE90 100%);
+}
+
+.gradient-lavender {
+  background: linear-gradient(135deg, #E6E6FA 0%, #D8BFD8 100%);
+}
+
+/* Navigation items */
+.nav-item {
+  @apply flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200;
+}
+
+.nav-item:hover {
+  @apply bg-pink-50;
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, #FF8FA3 0%, #FFB6C1 100%);
   color: white;
-  border: none;
-  border-radius: 20px;
-  box-shadow: 
-    0 4px 16px rgba(255, 143, 163, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 600;
 }
 
-.kawaii-button:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 
-    0 6px 24px rgba(255, 143, 163, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+/* Feature icons */
+.feature-icon {
+  @apply w-12 h-12 rounded-2xl flex items-center justify-center;
+  background: linear-gradient(135deg, #FFE4EC 0%, #FFF5F7 100%);
 }
 
-.kawaii-button:active {
-  transform: translateY(0) scale(0.98);
+/* Stats card */
+.stats-card {
+  @apply p-4 rounded-2xl;
+  background: linear-gradient(135deg, #FFF5F7 0%, #FFE4EC 100%);
+  border: 1px solid rgba(255, 182, 193, 0.3);
 }
 
-/* Secondary Kawaii Button */
-.kawaii-button-secondary {
-  background: linear-gradient(135deg, var(--secondary) 0%, #A899B9 100%);
-  color: white;
-  border: none;
-  border-radius: 20px;
-  box-shadow: 
-    0 4px 16px rgba(184, 169, 201, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 600;
-}
-
-.kawaii-button-secondary:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 
-    0 6px 24px rgba(184, 169, 201, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-/* Accent Kawaii Button */
-.kawaii-button-accent {
-  background: linear-gradient(135deg, var(--accent) 0%, #FF9A8B 100%);
-  color: white;
-  border: none;
-  border-radius: 20px;
-  box-shadow: 
-    0 4px 16px rgba(255, 180, 162, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 600;
-}
-
-.kawaii-button-accent:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 
-    0 6px 24px rgba(255, 180, 162, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
-}
-
-/* Kawaii Input Styling */
-.kawaii-input {
-  background: #FFFFFF;
-  border: 2px solid var(--border);
-  border-radius: 16px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+/* Pink button */
+.btn-pink {
+  @apply px-6 py-3 rounded-full text-white font-medium;
+  background: linear-gradient(135deg, #FF8FA3 0%, #FF6B85 100%);
+  box-shadow: 0 4px 15px rgba(255, 143, 163, 0.4);
   transition: all 0.3s ease;
 }
 
-.kawaii-input:focus {
-  border-color: var(--primary);
-  box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.05),
-    0 0 0 4px rgba(255, 143, 163, 0.15);
-  outline: none;
+.btn-pink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 143, 163, 0.5);
 }
 
-/* Gradient Text */
-.gradient-text-kawaii {
-  background: linear-gradient(135deg, #FF8FA3 0%, #B8A9C9 50%, #FFB4A2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Input styling */
+.input-kawaii {
+  @apply w-full px-4 py-3 rounded-2xl border-2 border-pink-200 bg-white;
+  transition: all 0.3s ease;
 }
 
-/* Section Backgrounds */
-.bg-kawaii-gradient {
-  background: linear-gradient(180deg, #FFF5F7 0%, #FFE4E9 50%, #FFD5E5 100%);
+.input-kawaii:focus {
+  @apply border-pink-400 outline-none;
+  box-shadow: 0 0 0 4px rgba(255, 143, 163, 0.15);
 }
 
-.bg-pink-gradient {
-  background: linear-gradient(135deg, #FFE4E9 0%, #FFD5E5 50%, #FFC4D6 100%);
-}
-
-/* High Contrast Text */
-.text-high-contrast {
-  color: #5D4E6D;
-  font-weight: 600;
-}
-
-.text-subtle {
-  color: #8B7B8B;
-}
-
-/* Kawaii Badge/Pill */
-.kawaii-badge {
-  background: linear-gradient(135deg, var(--primary-light) 0%, #FFF0F3 100%);
-  color: var(--primary-dark);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: 1px solid var(--border);
-}
-
-/* Kawaii Progress Bar */
-.kawaii-progress {
-  background: var(--primary-light);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.kawaii-progress-bar {
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
-  border-radius: 10px;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Floating Animation */
+/* Floating animation for mascots */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-8px); }
 }
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Pulse Animation for Timer */
-@keyframes kawaii-pulse {
-  0%, 100% { 
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 143, 163, 0.4);
-  }
-  50% { 
-    transform: scale(1.02);
-    box-shadow: 0 0 0 20px rgba(255, 143, 163, 0);
-  }
+/* Pulse animation */
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
 }
 
-.animate-kawaii-pulse {
-  animation: kawaii-pulse 2s ease-in-out infinite;
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
 }
 
-/* Sparkle Animation */
+/* Sparkle animation */
 @keyframes sparkle {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.6; transform: scale(0.8) rotate(180deg); }
 }
 
 .animate-sparkle {
-  animation: sparkle 1.5s ease-in-out infinite;
+  animation: sparkle 2s ease-in-out infinite;
 }
 
-/* Mobile Optimizations */
+/* Heart beat */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.1); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFE4EC;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FF8FA3;
+  border-radius: 3px;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 182, 193, 0.3);
+}
+
+/* Text gradient */
+.text-gradient-pink {
+  background: linear-gradient(135deg, #FF8FA3 0%, #FFB6C1 50%, #FF69B4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Badge styles */
+.badge-pink {
+  @apply px-3 py-1 rounded-full text-xs font-medium;
+  background: linear-gradient(135deg, #FFE4EC 0%, #FFF0F3 100%);
+  color: #FF6B85;
+  border: 1px solid rgba(255, 182, 193, 0.5);
+}
+
+/* Timeline item */
+.timeline-item {
+  @apply relative pl-8 pb-6;
+}
+
+.timeline-item::before {
+  content: '';
+  @apply absolute left-3 top-2 w-2 h-2 rounded-full bg-pink-400;
+}
+
+.timeline-item::after {
+  content: '';
+  @apply absolute left-3 top-4 w-0.5 h-full bg-pink-200;
+}
+
+/* Chart container */
+.chart-container {
+  @apply p-4 rounded-3xl bg-white;
+  box-shadow: 0 4px 20px rgba(255, 143, 163, 0.1);
+}
+
+/* Goal progress ring */
+.goal-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.goal-ring svg {
+  transform: rotate(-90deg);
+}
+
+.goal-ring-bg {
+  fill: none;
+  stroke: #FFE4EC;
+  stroke-width: 8;
+}
+
+.goal-ring-progress {
+  fill: none;
+  stroke: url(#gradient-pink);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+/* Mobile optimizations */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .safe-area-pb {
+  .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
-/* Touch-friendly interactions */
-.touch-manipulation {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+/* Touch feedback */
+.touch-feedback {
+  @apply active:scale-95 transition-transform duration-150;
 }
 
-/* Prevent text selection on interactive elements */
-.no-select {
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Mobile-specific card adjustments */
-@media (max-width: 640px) {
-  .kawaii-card {
-    border-radius: 20px;
-  }
-}
-
-/* iPad-specific optimizations */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .kawaii-card {
-    border-radius: 28px;
-  }
-}
-
-/* Prevent zoom on input focus for iOS */
+/* Prevent zoom on iOS */
 @media screen and (max-width: 768px) {
   input, select, textarea {
     font-size: 16px;
   }
-}
-
-/* Kawaii Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--primary-light);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-dark);
 }

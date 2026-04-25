@@ -28,15 +28,24 @@ export async function GET(req: NextRequest) {
         },
       });
 
-      const fastingData = fastingSessions.map((session) => ({
-        Date: session.startTime.toISOString().split("T")[0],
-        Mode: session.mode,
-        "Start Time": session.startTime.toISOString(),
-        "End Time": session.endTime?.toISOString() || "In Progress",
-        "Target Duration (hours)": session.mode === "OMAD" ? 23 : 20,
-        "Actual Duration (minutes)": session.duration || "N/A",
-        Status: session.isActive ? "Active" : "Completed",
-      }));
+      const fastingData = fastingSessions.map((session) => {
+        // Calculate actual duration in minutes
+        let actualDuration: string | number = "N/A";
+        if (session.endTime) {
+          const durationMs = new Date(session.endTime).getTime() - new Date(session.startTime).getTime();
+          actualDuration = Math.round(durationMs / (1000 * 60));
+        }
+        
+        return {
+          Date: session.startTime.toISOString().split("T")[0],
+          Mode: session.mode,
+          "Start Time": session.startTime.toISOString(),
+          "End Time": session.endTime?.toISOString() || "In Progress",
+          "Target Duration (hours)": session.mode === "OMAD" ? 23 : 20,
+          "Actual Duration (minutes)": actualDuration,
+          Status: session.status,
+        };
+      });
 
       const fastingSheet = XLSX.utils.json_to_sheet(fastingData);
       XLSX.utils.book_append_sheet(workbook, fastingSheet, "Fasting Sessions");

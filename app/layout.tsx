@@ -1,21 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Fasting Tracker - OMAD & Warrior Diet",
-  description: "Track your intermittent fasting journey with OMAD and Warrior Diet modes. Features push notifications, weight tracking, and calorie calculations.",
+  title: "🐰 Fasting Tracker - Kawaii Wellness",
+  description: "Track your intermittent fasting journey with cute bunny and bear companions. Features push notifications, weight tracking, and calorie calculations.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -28,7 +23,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#22c55e",
+  themeColor: "#FF8FA3",
 };
 
 export default function RootLayout({
@@ -39,9 +34,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col font-sans">
         <ServiceWorkerRegistration />
         {children}
       </body>
