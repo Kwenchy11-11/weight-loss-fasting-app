@@ -1,26 +1,124 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Luxury Feminine Color Palette */
+  --background: #FFFBF7;
+  --foreground: #2C1810;
+  
+  /* Primary - Rose Gold / Blush */
+  --primary: #D4A574;
+  --primary-foreground: #FFFFFF;
+  --primary-light: #F5E6D3;
+  --primary-dark: #B8935F;
+  
+  /* Secondary - Deep Emerald */
+  --secondary: #2D5A4A;
+  --secondary-foreground: #FFFFFF;
+  --secondary-light: #E8F5E9;
+  
+  /* Accent - Champagne Gold */
+  --accent: #C9A961;
+  --accent-foreground: #2C1810;
+  
+  /* Neutral - Warm Grays */
+  --muted: #F5F0EB;
+  --muted-foreground: #6B5B4F;
+  --border: #E8DDD4;
+  --card: #FFFFFF;
+  --card-foreground: #2C1810;
+  
+  /* Semantic Colors */
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --success: #2D5A4A;
+  --success-foreground: #FFFFFF;
+  --warning: #D97706;
+  --warning-foreground: #FFFFFF;
+  
+  /* Gradients */
+  --gradient-luxury: linear-gradient(135deg, #FFFBF7 0%, #F5E6D3 50%, #E8DDD4 100%);
+  --gradient-rose: linear-gradient(135deg, #F5E6D3 0%, #E8B4B8 100%);
+  --gradient-emerald: linear-gradient(135deg, #2D5A4A 0%, #1B4332 100%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+}
+
+/* Luxury Card Styling */
+.luxury-card {
+  background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF7 100%);
+  border: 1px solid var(--border);
+  box-shadow: 
+    0 4px 6px -1px rgba(44, 24, 16, 0.05),
+    0 2px 4px -1px rgba(44, 24, 16, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+}
+
+/* Elegant Button Styling */
+.luxury-button {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  border: none;
+  box-shadow: 
+    0 4px 14px rgba(212, 165, 116, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.luxury-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(212, 165, 116, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, #2D5A4A 0%, #D4A574 50%, #C9A961 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Section Backgrounds */
+.bg-luxury-gradient {
+  background: linear-gradient(180deg, #FFFBF7 0%, #F5E6D3 50%, #E8DDD4 100%);
+}
+
+.bg-rose-gradient {
+  background: linear-gradient(135deg, #FDF8F3 0%, #F5E6D3 50%, #E8B4B8 100%);
+}
+
+/* High Contrast Text */
+.text-high-contrast {
+  color: #2C1810;
+  font-weight: 500;
+}
+
+.text-subtle {
+  color: #6B5B4F;
 }
