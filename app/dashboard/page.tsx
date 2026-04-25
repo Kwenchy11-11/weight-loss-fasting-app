@@ -55,6 +55,9 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  // Redirect to Calculator as the main landing page
+  redirect("/dashboard/calculator");
+
   const data = await getDashboardData(session.user.id);
 
   return (

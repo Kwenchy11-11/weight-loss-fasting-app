@@ -1,12 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calculator, Flame, Target, Info, TrendingDown, Calendar, Clock, Utensils } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Calculator, Flame, Target, Info, TrendingDown, Calendar, Clock, Utensils, Play, CheckCircle2, Trash2, ChevronRight, Sparkles } from "lucide-react";
+import { formatDistanceToNow, format } from "date-fns";
+
+interface WeightLossGoal {
+  id: string;
+  currentWeight: number;
+  targetWeight: number;
+  timeframeWeeks: number;
+  weightLossPerWeek: number;
+  dailyCalorieTarget: number;
+  calorieDeficit: number;
+  recommendedMethod: string;
+  isActive: boolean;
+  startDate: string;
+  completedDate?: string;
+  createdAt: string;
+}
 
 type Gender = "male" | "female";
 type ActivityLevel = "sedentary" | "light" | "moderate" | "active" | "very_active";
@@ -47,6 +65,7 @@ const activityLabels: Record<ActivityLevel, string> = {
 };
 
 export default function CalculatorPage() {
+  const router = useRouter();
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
   const [age, setAge] = useState("");
@@ -60,6 +79,140 @@ export default function CalculatorPage() {
   const [targetWeight, setTargetWeight] = useState("");
   const [timeframe, setTimeframe] = useState("12"); // weeks
   const [goalResults, setGoalResults] = useState<WeightLossGoalResults | null>(null);
+  
+  // Saved Goals State
+  const [savedGoals, setSavedGoals] = useState<WeightLossGoal[]>([]);
+  const [activeGoal, setActiveGoal] = useState<WeightLossGoal | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [latestWeight, setLatestWeight] = useState<number | null>(null);
+
+  // Load saved goals and latest weight on mount
+  useEffect(() => {
+    loadGoals();
+    loadLatestWeight();
+  }, []);
+
+  const loadGoals = async () => {
+    try {
+      const response = await fetch("/api/goals");
+      if (response.ok) {
+        const data = await response.json();
+        setSavedGoals(data.goals || []);
+        const active = data.goals?.find((g: WeightLossGoal) => g.isActive);
+        if (active) {
+          setActiveGoal(active);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading goals:", error);
+    }
+  };
+
+  const loadLatestWeight = async () => {
+    try {
+      const response = await fetch("/api/weight");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.logs && data.logs.length > 0) {
+          const latest = data.logs[0];
+          setLatestWeight(latest.weight);
+          setCurrentWeight(latest.weight.toString());
+        }
+      }
+    } catch (error) {
+      console.error("Error loading weight:", error);
+    }
+  };
+
+  const saveGoal = async () => {
+    if (!goalResults) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/goals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentWeight: parseFloat(currentWeight),
+          targetWeight: parseFloat(targetWeight),
+          timeframeWeeks: parseInt(timeframe),
+          weightLossPerWeek: goalResults.weightLossPerWeek,
+          dailyCalorieTarget: goalResults.dailyCalorieTarget,
+          calorieDeficit: goalResults.calorieDeficit,
+          recommendedMethod: goalResults.recommendedMethod,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setActiveGoal(data.goal);
+        await loadGoals();
+        alert("Goal saved successfully! 🎉");
+      }
+    } catch (error) {
+      console.error("Error saving goal:", error);
+      alert("Failed to save goal");
+    }
+    setIsLoading(false);
+  };
+
+  const completeGoal = async (goalId: string) => {
+    try {
+      const response = await fetch("/api/goals", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          goalId,
+          isActive: false,
+          completedDate: new Date().toISOString(),
+        }),
+      });
+
+      if (response.ok) {
+        await loadGoals();
+        setActiveGoal(null);
+      }
+    } catch (error) {
+      console.error("Error completing goal:", error);
+    }
+  };
+
+  const deleteGoal = async (goalId: string) => {
+    if (!confirm("Are you sure you want to delete this goal?")) return;
+    
+    try {
+      const response = await fetch(`/api/goals?id=${goalId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        await loadGoals();
+        if (activeGoal?.id === goalId) {
+          setActiveGoal(null);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting goal:", error);
+    }
+  };
+
+  const startFasting = (method: string) => {
+    const modeMap: Record<string, string> = {
+      "OMAD": "OMAD",
+      "20:4": "WARRIOR",
+      "Warrior": "WARRIOR",
+    };
+    const mode = modeMap[method] || "OMAD";
+    router.push(`/dashboard/fasting?mode=${mode}`);
+  };
+
+  const calculateProgress = (goal: WeightLossGoal) => {
+    if (!latestWeight) return 0;
+    const totalToLose = goal.currentWeight - goal.targetWeight;
+    const lost = goal.currentWeight - latestWeight;
+    const progress = Math.min(100, Math.max(0, (lost / totalToLose) * 100));
+    return Math.round(progress);
+  };
 
   const calculateCalories = () => {
     const w = parseFloat(weight);
@@ -355,6 +508,74 @@ export default function CalculatorPage() {
         </div>
       </div>
 
+      {/* Active Goal Progress */}
+      {activeGoal && (
+        <Card className="luxury-card border-l-4 border-l-[#2D5A4A] mb-6">
+          <CardHeader>
+            <CardTitle className="text-[#2C1810] flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-[#C9A961]" />
+              Your Active Goal
+            </CardTitle>
+            <CardDescription className="text-[#6B5B4F]">
+              Started {formatDistanceToNow(new Date(activeGoal.startDate))} ago
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-sm text-[#6B5B4F]">From</p>
+                <p className="text-xl font-bold text-[#2C1810]">{activeGoal.currentWeight} kg</p>
+              </div>
+              <div>
+                <p className="text-sm text-[#6B5B4F]">Current</p>
+                <p className="text-xl font-bold text-[#D4A574]">{latestWeight || "--"} kg</p>
+              </div>
+              <div>
+                <p className="text-sm text-[#6B5B4F]">Target</p>
+                <p className="text-xl font-bold text-[#2D5A4A]">{activeGoal.targetWeight} kg</p>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-[#6B5B4F]">Progress</span>
+                <span className="font-medium text-[#2C1810]">{calculateProgress(activeGoal)}%</span>
+              </div>
+              <Progress value={calculateProgress(activeGoal)} className="h-3" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="bg-[#F8F5F2] rounded-lg p-3 text-center">
+                <p className="text-xs text-[#6B5B4F]">Daily Target</p>
+                <p className="text-lg font-bold text-[#2C1810]">{activeGoal.dailyCalorieTarget} cal</p>
+              </div>
+              <div className="bg-[#F8F5F2] rounded-lg p-3 text-center">
+                <p className="text-xs text-[#6B5B4F]">Method</p>
+                <p className="text-lg font-bold text-[#2C1810]">{activeGoal.recommendedMethod}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                onClick={() => startFasting(activeGoal.recommendedMethod)}
+                className="flex-1 bg-gradient-to-r from-[#2D5A4A] to-[#1E3D32] hover:from-[#234A3A] hover:to-[#152D25] text-white"
+              >
+                <Play className="h-4 w-4 mr-2" />
+                Start Fasting
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => completeGoal(activeGoal.id)}
+                className="border-[#2D5A4A] text-[#2D5A4A]"
+              >
+                <CheckCircle2 className="h-4 w-4 mr-2" />
+                Complete
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Weight Loss Goal Calculator */}
       <div className="mt-8 pt-8 border-t border-[#E8DDD4]">
         <div className="mb-6">
@@ -489,8 +710,24 @@ export default function CalculatorPage() {
                         {goalResults.eatingWindow} eating window
                       </span>
                     </div>
+                    <Button
+                      onClick={() => startFasting(goalResults.recommendedMethod)}
+                      className="w-full mt-4 bg-gradient-to-r from-[#2D5A4A] to-[#1E3D32] hover:from-[#234A3A] hover:to-[#152D25] text-white"
+                    >
+                      <Play className="h-4 w-4 mr-2" />
+                      Start {goalResults.recommendedMethod} Fast
+                    </Button>
                   </CardContent>
                 </Card>
+
+                {/* Save Goal Button */}
+                <Button
+                  onClick={saveGoal}
+                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-[#D4A574] to-[#B8935F] hover:from-[#C49464] hover:to-[#A8834F] text-white h-12"
+                >
+                  {isLoading ? "Saving..." : "💾 Save This Goal & Track Progress"}
+                </Button>
               </>
             ) : (
               <Card className="luxury-card h-full flex items-center justify-center">
@@ -505,6 +742,56 @@ export default function CalculatorPage() {
           </div>
         </div>
       </div>
+
+      {/* Past Goals History */}
+      {savedGoals.length > 0 && (
+        <div className="mt-8">
+          <h3 className="text-xl font-bold text-[#2C1810] mb-4 flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-[#2D5A4A]" />
+            Your Goals History
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {savedGoals.map((goal) => (
+              <Card key={goal.id} className={`luxury-card ${goal.isActive ? 'border-l-4 border-l-[#2D5A4A]' : 'opacity-75'}`}>
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="font-medium text-[#2C1810]">
+                        {goal.currentWeight} kg → {goal.targetWeight} kg
+                      </p>
+                      <p className="text-sm text-[#6B5B4F]">
+                        {goal.recommendedMethod} • {goal.timeframeWeeks} weeks
+                      </p>
+                    </div>
+                    <div className="flex gap-1">
+                      {goal.isActive ? (
+                        <span className="text-xs bg-[#2D5A4A] text-white px-2 py-1 rounded-full">Active</span>
+                      ) : goal.completedDate ? (
+                        <span className="text-xs bg-[#C9A961] text-white px-2 py-1 rounded-full">Completed</span>
+                      ) : (
+                        <span className="text-xs bg-gray-400 text-white px-2 py-1 rounded-full">Inactive</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm text-[#6B5B4F]">
+                      Started {format(new Date(goal.startDate), "MMM d, yyyy")}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteGoal(goal.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Info Card */}
       <Card className="luxury-card mt-8">

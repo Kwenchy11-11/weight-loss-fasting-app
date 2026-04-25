@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { Clock, Play, Square, History } from "lucide-react";
+import { Clock, Play, Square, History, Smartphone, Bell } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 
 type FastingMode = "OMAD" | "WARRIOR";
@@ -19,13 +20,23 @@ interface FastingSession {
   endTime?: string;
 }
 
-export default function FastingPage() {
+function FastingTimerContent() {
+  const searchParams = useSearchParams();
+  const modeParam = searchParams.get("mode");
+  
   const [activeSession, setActiveSession] = useState<FastingSession | null>(null);
   const [pastSessions, setPastSessions] = useState<FastingSession[]>([]);
   const [selectedMode, setSelectedMode] = useState<FastingMode>("OMAD");
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
+
+  // Set mode from URL parameter on mount
+  useEffect(() => {
+    if (modeParam === "WARRIOR" || modeParam === "OMAD") {
+      setSelectedMode(modeParam);
+    }
+  }, [modeParam]);
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -43,6 +54,20 @@ export default function FastingPage() {
   useEffect(() => {
     fetchSessions();
   }, [fetchSessions]);
+
+  // Check for existing timer state and restore wake lock if active
+  useEffect(() => {
+    if (activeSession && !wakeLock) {
+      requestWakeLock();
+      
+      // Restore timer in service worker
+      sendTimerToServiceWorker(
+        "START_TIMER",
+        activeSession.targetEndTime,
+        activeSession.mode === "OMAD" ? "OMAD (23:1)" : "Warrior (20:4)"
+      );
+    }
+  }, [activeSession]);
 
   useEffect(() => {
     if (!activeSession) {
@@ -76,6 +101,46 @@ export default function FastingPage() {
     return () => clearInterval(interval);
   }, [activeSession]);
 
+  // Wake Lock to keep screen on during fasting
+  const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
+  const [isWakeLockSupported, setIsWakeLockSupported] = useState(false);
+
+  useEffect(() => {
+    setIsWakeLockSupported("wakeLock" in navigator);
+  }, []);
+
+  const requestWakeLock = async () => {
+    if (!isWakeLockSupported) return;
+    try {
+      const lock = await navigator.wakeLock.request("screen");
+      setWakeLock(lock);
+      
+      lock.addEventListener("release", () => {
+        setWakeLock(null);
+      });
+    } catch (err) {
+      console.error("Wake Lock error:", err);
+    }
+  };
+
+  const releaseWakeLock = () => {
+    if (wakeLock) {
+      wakeLock.release();
+      setWakeLock(null);
+    }
+  };
+
+  // Send timer state to service worker
+  const sendTimerToServiceWorker = (type: "START_TIMER" | "STOP_TIMER", endTime?: string, mode?: string) => {
+    if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({
+        type,
+        endTime,
+        mode,
+      });
+    }
+  };
+
   const startFasting = async () => {
     setLoading(true);
     try {
@@ -86,7 +151,30 @@ export default function FastingPage() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         await fetchSessions();
+        
+        // Request wake lock to keep screen on
+        await requestWakeLock();
+        
+        // Send timer to service worker for persistent notification
+        if (data.session) {
+          sendTimerToServiceWorker(
+            "START_TIMER",
+            data.session.targetEndTime,
+            selectedMode === "OMAD" ? "OMAD (23:1)" : "Warrior (20:4)"
+          );
+        }
+        
+        // Request background sync if available
+        if ("serviceWorker" in navigator && "SyncManager" in window) {
+          const registration = await navigator.serviceWorker.ready;
+          try {
+            await (registration as any).sync.register("timer-update");
+          } catch (err) {
+            console.error("Background sync registration failed:", err);
+          }
+        }
       }
     } catch (error) {
       console.error("Error starting fast:", error);
@@ -103,6 +191,12 @@ export default function FastingPage() {
 
       if (response.ok) {
         await fetchSessions();
+        
+        // Release wake lock
+        releaseWakeLock();
+        
+        // Stop timer in service worker
+        sendTimerToServiceWorker("STOP_TIMER");
       }
     } catch (error) {
       console.error("Error stopping fast:", error);
@@ -181,6 +275,25 @@ export default function FastingPage() {
                 <p className="text-sm text-gray-600">
                   Target end time: {format(new Date(activeSession.targetEndTime), "PPp")}
                 </p>
+                
+                {/* Status indicators */}
+                <div className="flex justify-center gap-4 text-xs text-gray-500">
+                  {wakeLock && (
+                    <span className="flex items-center gap-1 bg-green-50 text-green-700 px-2 py-1 rounded-full">
+                      <Smartphone className="h-3 w-3" />
+                      Screen stays on
+                    </span>
+                  )}
+                  <span className="flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-full">
+                    <Bell className="h-3 w-3" />
+                    Timer in notifications
+                  </span>
+                </div>
+                
+                <p className="text-xs text-gray-500 max-w-sm mx-auto">
+                  Keep this page open or check your notifications for timer updates. 
+                  The timer will notify you when complete.
+                </p>
               </div>
               <Button
                 onClick={stopFasting}
@@ -244,5 +357,27 @@ export default function FastingPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+// Main export with Suspense wrapper
+export default function FastingPage() {
+  return (
+    <Suspense fallback={
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Fasting Timer</h1>
+          <p className="text-gray-600">Track your intermittent fasting sessions</p>
+        </div>
+        <Card>
+          <CardContent className="p-8 text-center">
+            <Clock className="h-8 w-8 mx-auto mb-4 text-gray-400 animate-pulse" />
+            <p className="text-gray-600">Loading...</p>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <FastingTimerContent />
+    </Suspense>
   );
 }
