@@ -1,11 +1,11 @@
 {
-  "name": "Fasting Tracker - OMAD & Warrior Diet",
-  "short_name": "Fasting Tracker",
-  "description": "Track your intermittent fasting journey with OMAD and Warrior Diet modes",
+  "name": "🐰 Fasting Tracker - Kawaii Wellness",
+  "short_name": "🌸 Fasting Tracker",
+  "description": "Track your intermittent fasting journey with cute bunny and bear companions",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#22c55e",
+  "background_color": "#FFF5F7",
+  "theme_color": "#FF8FA3",
   "orientation": "portrait",
   "scope": "/",
   "icons": [

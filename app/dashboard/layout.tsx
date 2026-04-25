@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { authOptions } from "@/lib/auth";
-import { LogOut, Clock, Scale, Calculator, Download, Bell, Home, Sparkles } from "lucide-react";
+import { LogOut, Clock, Scale, Calculator, Download, Bell, Home, Sparkles, Heart } from "lucide-react";
 import { SignOutButton } from "@/components/sign-out-button";
+import { Mascot } from "@/components/mascot";
 
 export default async function DashboardLayout({
   children,
@@ -18,18 +19,21 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFBF7]">
-      {/* Header - Mobile Optimized */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-[#E8DDD4] sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF5F7] via-[#FFE4E9] to-[#FFD5E5]">
+      {/* Header - Kawaii Style */}
+      <header className="bg-white/90 backdrop-blur-md border-b-2 border-[#FFE4E9] sticky top-0 z-50">
         <div className="container mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-[#D4A574] to-[#B8935F] rounded-lg flex items-center justify-center">
-              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#FF8FA3] to-[#FFB4C2] rounded-2xl flex items-center justify-center shadow-lg shadow-pink-200">
+              <span className="text-lg">🐰</span>
             </div>
-            <span className="font-bold text-lg sm:text-xl text-[#2C1810]">Fasting Tracker</span>
+            <div className="flex flex-col">
+              <span className="font-bold text-lg sm:text-xl text-[#5D4E6D]">Fasting Tracker</span>
+              <span className="text-[10px] text-[#FF8FA3] -mt-1">Kawaii Wellness 💕</span>
+            </div>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
-            <span className="text-xs sm:text-sm text-[#6B5B4F] hidden sm:inline truncate max-w-[150px]">
+            <span className="text-xs sm:text-sm text-[#8B7B8B] hidden sm:inline truncate max-w-[150px]">
               {session.user?.name || session.user?.email}
             </span>
             <SignOutButton />
@@ -38,86 +42,85 @@ export default async function DashboardLayout({
       </header>
 
       <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-[#E8DDD4] min-h-[calc(100vh-4rem)] hidden md:block">
+        {/* Sidebar - Kawaii Style */}
+        <aside className="w-64 bg-white/80 backdrop-blur-sm border-r-2 border-[#FFE4E9] min-h-[calc(100vh-4rem)] hidden md:block">
           <nav className="p-4 space-y-2">
             <Link href="/dashboard">
-              <Button variant="ghost" className="w-full justify-start text-[#6B5B4F] hover:text-[#2C1810] hover:bg-[#F5E6D3]">
+              <Button variant="ghost" className="w-full justify-start text-[#8B7B8B] hover:text-[#FF8FA3] hover:bg-[#FFF5F7] rounded-2xl">
                 <Home className="mr-3 h-4 w-4" />
                 Dashboard
               </Button>
             </Link>
             <Link href="/dashboard/fasting">
-              <Button variant="ghost" className="w-full justify-start text-[#6B5B4F] hover:text-[#2C1810] hover:bg-[#F5E6D3]">
+              <Button variant="ghost" className="w-full justify-start text-[#8B7B8B] hover:text-[#FF8FA3] hover:bg-[#FFF5F7] rounded-2xl">
                 <Clock className="mr-3 h-4 w-4" />
                 Fasting Timer
               </Button>
             </Link>
             <Link href="/dashboard/weight">
-              <Button variant="ghost" className="w-full justify-start text-[#6B5B4F] hover:text-[#2C1810] hover:bg-[#F5E6D3]">
+              <Button variant="ghost" className="w-full justify-start text-[#8B7B8B] hover:text-[#FF8FA3] hover:bg-[#FFF5F7] rounded-2xl">
                 <Scale className="mr-3 h-4 w-4" />
                 Weight Tracking
               </Button>
             </Link>
             <Link href="/dashboard/calculator">
-              <Button variant="ghost" className="w-full justify-start text-[#6B5B4F] hover:text-[#2C1810] hover:bg-[#F5E6D3]">
+              <Button variant="ghost" className="w-full justify-start text-[#8B7B8B] hover:text-[#FF8FA3] hover:bg-[#FFF5F7] rounded-2xl">
                 <Calculator className="mr-3 h-4 w-4" />
                 Calorie Calculator
               </Button>
             </Link>
             <Link href="/dashboard/export">
-              <Button variant="ghost" className="w-full justify-start text-[#6B5B4F] hover:text-[#2C1810] hover:bg-[#F5E6D3]">
+              <Button variant="ghost" className="w-full justify-start text-[#8B7B8B] hover:text-[#FF8FA3] hover:bg-[#FFF5F7] rounded-2xl">
                 <Download className="mr-3 h-4 w-4" />
                 Export Data
               </Button>
             </Link>
             <Link href="/dashboard/notifications">
-              <Button variant="ghost" className="w-full justify-start text-[#6B5B4F] hover:text-[#2C1810] hover:bg-[#F5E6D3]">
+              <Button variant="ghost" className="w-full justify-start text-[#8B7B8B] hover:text-[#FF8FA3] hover:bg-[#FFF5F7] rounded-2xl">
                 <Bell className="mr-3 h-4 w-4" />
                 Notifications
               </Button>
             </Link>
           </nav>
 
-          {/* Pro Banner */}
-          <div className="p-4 mt-8">
-            <div className="bg-gradient-to-br from-[#F5E6D3] to-[#E8B4B8] rounded-xl p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="h-4 w-4 text-[#D4A574]" />
-                <span className="text-sm font-semibold text-[#2C1810]">Premium</span>
+          {/* Kawaii Banner */}
+          <div className="p-4 mt-4">
+            <div className="bg-gradient-to-br from-[#FFE4E9] to-[#FFD5E5] rounded-3xl p-4 border-2 border-[#FFB4C2]">
+              <div className="flex items-center justify-center mb-3">
+                <Mascot type="bunny-happy" size="md" />
               </div>
-              <p className="text-xs text-[#6B5B4F] mb-3">
-                Unlock advanced analytics and personalized insights
-              </p>
-              <Button size="sm" className="w-full bg-[#2C1810] hover:bg-[#3D2820] text-white text-xs">
-                Upgrade Now
-              </Button>
+              <div className="text-center">
+                <span className="text-sm font-semibold text-[#5D4E6D]">Stay Motivated!</span>
+                <p className="text-xs text-[#8B7B8B] mt-1">
+                  Every step counts 💕
+                </p>
+              </div>
             </div>
           </div>
         </aside>
 
-        {/* Mobile Navigation - iPad/Mobile Optimized */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-[#E8DDD4] z-50 safe-area-pb">
+        {/* Mobile Navigation - Kawaii Style */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t-2 border-[#FFE4E9] z-50 safe-area-pb">
           <div className="flex justify-around items-center py-2 px-1">
-            <Link href="/dashboard" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
-              <Home className="h-5 w-5 text-[#6B5B4F]" />
-              <span className="text-[10px] text-[#6B5B4F] font-medium">Home</span>
+            <Link href="/dashboard" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl active:bg-[#FFF5F7]">
+              <Home className="h-5 w-5 text-[#FF8FA3]" />
+              <span className="text-[10px] text-[#8B7B8B] font-medium">Home</span>
             </Link>
-            <Link href="/dashboard/fasting" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
-              <Clock className="h-5 w-5 text-[#6B5B4F]" />
-              <span className="text-[10px] text-[#6B5B4F] font-medium">Fast</span>
+            <Link href="/dashboard/fasting" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl active:bg-[#FFF5F7]">
+              <Clock className="h-5 w-5 text-[#FF8FA3]" />
+              <span className="text-[10px] text-[#8B7B8B] font-medium">Fast</span>
             </Link>
-            <Link href="/dashboard/weight" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
-              <Scale className="h-5 w-5 text-[#6B5B4F]" />
-              <span className="text-[10px] text-[#6B5B4F] font-medium">Weight</span>
+            <Link href="/dashboard/weight" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl active:bg-[#FFF5F7]">
+              <Scale className="h-5 w-5 text-[#FF8FA3]" />
+              <span className="text-[10px] text-[#8B7B8B] font-medium">Weight</span>
             </Link>
-            <Link href="/dashboard/calculator" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
-              <Calculator className="h-5 w-5 text-[#6B5B4F]" />
-              <span className="text-[10px] text-[#6B5B4F] font-medium">Calc</span>
+            <Link href="/dashboard/calculator" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl active:bg-[#FFF5F7]">
+              <Calculator className="h-5 w-5 text-[#FF8FA3]" />
+              <span className="text-[10px] text-[#8B7B8B] font-medium">Calc</span>
             </Link>
-            <Link href="/dashboard/export" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
-              <Download className="h-5 w-5 text-[#6B5B4F]" />
-              <span className="text-[10px] text-[#6B5B4F] font-medium">Export</span>
+            <Link href="/dashboard/export" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-2xl active:bg-[#FFF5F7]">
+              <Download className="h-5 w-5 text-[#FF8FA3]" />
+              <span className="text-[10px] text-[#8B7B8B] font-medium">Export</span>
             </Link>
           </div>
         </nav>

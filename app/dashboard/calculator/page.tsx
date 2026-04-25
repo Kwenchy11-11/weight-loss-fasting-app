@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { Calculator, Flame, Target, Info, TrendingDown, Calendar, Clock, Utensils, Play, CheckCircle2, Trash2, ChevronRight, Sparkles } from "lucide-react";
+import { Calculator, Flame, Target, Info, TrendingDown, Calendar, Clock, Utensils, Play, CheckCircle2, Trash2, ChevronRight, Sparkles, Heart } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
+import { Mascot } from "@/components/mascot";
 
 interface WeightLossGoal {
   id: string;
@@ -331,22 +332,33 @@ export default function CalculatorPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Calorie Calculator</h1>
-        <p className="text-gray-600">
-          Calculate your BMR, TDEE, and daily calorie targets
-        </p>
+      {/* Kawaii Header */}
+      <div className="text-center py-6 bg-gradient-to-r from-[#FFE4E9] via-[#FFF5F7] to-[#FFE4E9] rounded-3xl border-2 border-[#FFD5E5]">
+        <div className="flex justify-center items-center gap-4 mb-2">
+          <Mascot type="bunny" size="sm" />
+          <div>
+            <h1 className="text-3xl font-bold gradient-text-kawaii">Your Wellness Journey</h1>
+            <p className="text-[#8B7B8B] mt-1 flex items-center justify-center gap-2">
+              <Heart className="h-4 w-4 text-[#FF6B85] fill-[#FF6B85]" />
+              Calculate your goals and track your progress
+              <Heart className="h-4 w-4 text-[#FF6B85] fill-[#FF6B85]" />
+            </p>
+          </div>
+          <Mascot type="bear" size="sm" />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Form */}
-        <Card>
+        <Card className="kawaii-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calculator className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-[#5D4E6D]">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FF8FA3] to-[#FFB4C2] flex items-center justify-center">
+                <Calculator className="h-5 w-5 text-white" />
+              </div>
               Your Details
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-[#8B7B8B]">
               Enter your information to calculate your calorie needs
             </CardDescription>
           </CardHeader>
@@ -435,10 +447,11 @@ export default function CalculatorPage() {
 
             <Button
               onClick={calculateCalories}
-              className="w-full"
+              className="w-full kawaii-button h-12 text-lg"
               disabled={!weight || !height || !age}
             >
-              Calculate
+              <Sparkles className="h-5 w-5 mr-2" />
+              Calculate ✨
             </Button>
           </CardContent>
         </Card>
@@ -447,59 +460,65 @@ export default function CalculatorPage() {
         <div className="space-y-4">
           {results ? (
             <>
-              <Card className="border-orange-500">
+              <Card className="kawaii-card border-l-4 border-l-[#FFB4A2]">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Flame className="h-5 w-5 text-orange-500" />
+                  <CardTitle className="flex items-center gap-2 text-lg text-[#5D4E6D]">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB4A2] to-[#FF8FA3] flex items-center justify-center">
+                      <Flame className="h-4 w-4 text-white" />
+                    </div>
                     Basal Metabolic Rate (BMR)
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-4xl font-bold">{results.bmr.toLocaleString()}</p>
-                  <p className="text-sm text-gray-600">calories/day</p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Calories your body burns at complete rest
+                  <p className="text-4xl font-bold text-[#FF8FA3]">{results.bmr.toLocaleString()}</p>
+                  <p className="text-sm text-[#8B7B8B]">calories/day</p>
+                  <p className="text-sm text-[#8B7B8B] mt-2">
+                    Calories your body burns at complete rest 💕
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="border-blue-500">
+              <Card className="kawaii-card border-l-4 border-l-[#B8A9C9]">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Calculator className="h-5 w-5 text-blue-500" />
+                  <CardTitle className="flex items-center gap-2 text-lg text-[#5D4E6D]">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#B8A9C9] to-[#A899B9] flex items-center justify-center">
+                      <Calculator className="h-4 w-4 text-white" />
+                    </div>
                     Total Daily Energy Expenditure (TDEE)
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-4xl font-bold">{results.tdee.toLocaleString()}</p>
-                  <p className="text-sm text-gray-600">calories/day</p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Calories to maintain your current weight
+                  <p className="text-4xl font-bold text-[#B8A9C9]">{results.tdee.toLocaleString()}</p>
+                  <p className="text-sm text-[#8B7B8B]">calories/day</p>
+                  <p className="text-sm text-[#8B7B8B] mt-2">
+                    Calories to maintain your current weight 🌸
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="border-green-500">
+              <Card className="kawaii-card border-l-4 border-l-[#A8E6CF]">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Target className="h-5 w-5 text-green-500" />
+                  <CardTitle className="flex items-center gap-2 text-lg text-[#5D4E6D]">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#A8E6CF] to-[#88D8B0] flex items-center justify-center">
+                      <Target className="h-4 w-4 text-white" />
+                    </div>
                     Target Calories
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-4xl font-bold">
+                  <p className="text-4xl font-bold text-[#2D5A4A]">
                     {results.targetCalories.toLocaleString()}
                   </p>
-                  <p className="text-sm text-gray-600">calories/day</p>
-                  <p className="text-sm text-gray-600 mt-2">{getGoalLabel()}</p>
+                  <p className="text-sm text-[#8B7B8B]">calories/day</p>
+                  <p className="text-sm text-[#8B7B8B] mt-2">{getGoalLabel()} 🎯</p>
                 </CardContent>
               </Card>
             </>
           ) : (
-            <Card className="h-full flex items-center justify-center">
+            <Card className="kawaii-card h-full flex items-center justify-center">
               <CardContent className="text-center p-8">
-                <Info className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">
+                <Mascot type="bunny" size="md" />
+                <p className="text-[#8B7B8B] mt-4">
                   Enter your details and click Calculate to see your results
                 </p>
               </CardContent>
@@ -510,66 +529,72 @@ export default function CalculatorPage() {
 
       {/* Active Goal Progress */}
       {activeGoal && (
-        <Card className="luxury-card border-l-4 border-l-[#2D5A4A] mb-6">
+        <Card className="kawaii-card border-l-4 border-l-[#FF8FA3] mb-6">
           <CardHeader>
-            <CardTitle className="text-[#2C1810] flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-[#C9A961]" />
+            <CardTitle className="text-[#5D4E6D] flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-[#FF8FA3]" />
               Your Active Goal
+              <Mascot type="bunny-happy" size="sm" />
             </CardTitle>
-            <CardDescription className="text-[#6B5B4F]">
-              Started {formatDistanceToNow(new Date(activeGoal.startDate))} ago
+            <CardDescription className="text-[#8B7B8B]">
+              Started {formatDistanceToNow(new Date(activeGoal.startDate))} ago 💕
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <p className="text-sm text-[#6B5B4F]">From</p>
-                <p className="text-xl font-bold text-[#2C1810]">{activeGoal.currentWeight} kg</p>
+              <div className="bg-[#FFF5F7] rounded-2xl p-3">
+                <p className="text-sm text-[#8B7B8B]">From</p>
+                <p className="text-xl font-bold text-[#5D4E6D]">{activeGoal.currentWeight} kg</p>
               </div>
-              <div>
-                <p className="text-sm text-[#6B5B4F]">Current</p>
-                <p className="text-xl font-bold text-[#D4A574]">{latestWeight || "--"} kg</p>
+              <div className="bg-[#FFE4E9] rounded-2xl p-3">
+                <p className="text-sm text-[#8B7B8B]">Current</p>
+                <p className="text-xl font-bold text-[#FF8FA3]">{latestWeight || "--"} kg</p>
               </div>
-              <div>
-                <p className="text-sm text-[#6B5B4F]">Target</p>
+              <div className="bg-[#E8F5E9] rounded-2xl p-3">
+                <p className="text-sm text-[#8B7B8B]">Target</p>
                 <p className="text-xl font-bold text-[#2D5A4A]">{activeGoal.targetWeight} kg</p>
               </div>
             </div>
             
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-[#6B5B4F]">Progress</span>
-                <span className="font-medium text-[#2C1810]">{calculateProgress(activeGoal)}%</span>
+                <span className="text-[#8B7B8B]">Progress</span>
+                <span className="font-medium text-[#FF8FA3]">{calculateProgress(activeGoal)}% 🎉</span>
               </div>
-              <Progress value={calculateProgress(activeGoal)} className="h-3" />
+              <div className="h-4 bg-[#FFE4E9] rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-[#FF8FA3] to-[#FFB4C2] rounded-full transition-all duration-500"
+                  style={{ width: `${calculateProgress(activeGoal)}%` }}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="bg-[#F8F5F2] rounded-lg p-3 text-center">
-                <p className="text-xs text-[#6B5B4F]">Daily Target</p>
-                <p className="text-lg font-bold text-[#2C1810]">{activeGoal.dailyCalorieTarget} cal</p>
+              <div className="bg-gradient-to-br from-[#FFF5F7] to-[#FFE4E9] rounded-2xl p-3 text-center border-2 border-[#FFD5E5]">
+                <p className="text-xs text-[#8B7B8B]">Daily Target</p>
+                <p className="text-lg font-bold text-[#FF8FA3]">{activeGoal.dailyCalorieTarget} cal</p>
               </div>
-              <div className="bg-[#F8F5F2] rounded-lg p-3 text-center">
-                <p className="text-xs text-[#6B5B4F]">Method</p>
-                <p className="text-lg font-bold text-[#2C1810]">{activeGoal.recommendedMethod}</p>
+              <div className="bg-gradient-to-br from-[#E8E0F0] to-[#F0E8F5] rounded-2xl p-3 text-center border-2 border-[#D4C4E0]">
+                <p className="text-xs text-[#8B7B8B]">Method</p>
+                <p className="text-lg font-bold text-[#B8A9C9]">{activeGoal.recommendedMethod}</p>
               </div>
             </div>
 
             <div className="flex gap-2 pt-2">
               <Button
                 onClick={() => startFasting(activeGoal.recommendedMethod)}
-                className="flex-1 bg-gradient-to-r from-[#2D5A4A] to-[#1E3D32] hover:from-[#234A3A] hover:to-[#152D25] text-white"
+                className="flex-1 kawaii-button h-12"
               >
                 <Play className="h-4 w-4 mr-2" />
-                Start Fasting
+                Start Fasting 🐰
               </Button>
               <Button
                 variant="outline"
                 onClick={() => completeGoal(activeGoal.id)}
-                className="border-[#2D5A4A] text-[#2D5A4A]"
+                className="border-[#A8E6CF] text-[#2D5A4A] hover:bg-[#E8F5E9] rounded-2xl"
               >
                 <CheckCircle2 className="h-4 w-4 mr-2" />
-                Complete
+                Complete 🎉
               </Button>
             </div>
           </CardContent>
@@ -577,33 +602,39 @@ export default function CalculatorPage() {
       )}
 
       {/* Weight Loss Goal Calculator */}
-      <div className="mt-8 pt-8 border-t border-[#E8DDD4]">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-[#2C1810] flex items-center gap-2">
-            <TrendingDown className="h-6 w-6 text-[#D4A574]" />
-            Weight Loss Goal Calculator
-          </h2>
-          <p className="text-[#6B5B4F] mt-1">
-            Set your target weight and timeframe to get a personalized fasting plan
+      <div className="mt-8 pt-8 border-t-2 border-[#FFE4E9]">
+        <div className="mb-6 text-center">
+          <div className="flex justify-center items-center gap-3 mb-2">
+            <Mascot type="bear" size="sm" />
+            <h2 className="text-2xl font-bold text-[#5D4E6D] flex items-center gap-2">
+              <TrendingDown className="h-6 w-6 text-[#FF8FA3]" />
+              Weight Loss Goal Calculator
+            </h2>
+            <Mascot type="bunny" size="sm" />
+          </div>
+          <p className="text-[#8B7B8B] mt-1">
+            Set your target weight and timeframe to get a personalized fasting plan 💕
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Goal Input Form */}
-          <Card className="luxury-card">
+          <Card className="kawaii-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#2C1810]">
-                <Target className="h-5 w-5 text-[#D4A574]" />
+              <CardTitle className="flex items-center gap-2 text-[#5D4E6D]">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FF8FA3] to-[#FFB4C2] flex items-center justify-center">
+                  <Target className="h-5 w-5 text-white" />
+                </div>
                 Your Goal
               </CardTitle>
-              <CardDescription className="text-[#6B5B4F]">
+              <CardDescription className="text-[#8B7B8B]">
                 Enter your current weight, target weight, and how quickly you want to reach it
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="currentWeight" className="text-[#2C1810]">Current Weight (kg)</Label>
+                  <Label htmlFor="currentWeight" className="text-[#5D4E6D]">Current Weight (kg)</Label>
                   <Input
                     id="currentWeight"
                     type="number"
@@ -611,11 +642,11 @@ export default function CalculatorPage() {
                     placeholder="70"
                     value={currentWeight}
                     onChange={(e) => setCurrentWeight(e.target.value)}
-                    className="border-[#E8DDD4]"
+                    className="kawaii-input"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="targetWeight" className="text-[#2C1810]">Target Weight (kg)</Label>
+                  <Label htmlFor="targetWeight" className="text-[#5D4E6D]">Target Weight (kg)</Label>
                   <Input
                     id="targetWeight"
                     type="number"
@@ -623,35 +654,36 @@ export default function CalculatorPage() {
                     placeholder="60"
                     value={targetWeight}
                     onChange={(e) => setTargetWeight(e.target.value)}
-                    className="border-[#E8DDD4]"
+                    className="kawaii-input"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="timeframe" className="text-[#2C1810]">Timeframe (weeks)</Label>
+                <Label htmlFor="timeframe" className="text-[#5D4E6D]">Timeframe (weeks)</Label>
                 <Select value={timeframe} onValueChange={setTimeframe}>
-                  <SelectTrigger className="border-[#E8DDD4]">
+                  <SelectTrigger className="kawaii-input">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="4">4 weeks (1 month)</SelectItem>
-                    <SelectItem value="8">8 weeks (2 months)</SelectItem>
-                    <SelectItem value="12">12 weeks (3 months)</SelectItem>
-                    <SelectItem value="16">16 weeks (4 months)</SelectItem>
-                    <SelectItem value="20">20 weeks (5 months)</SelectItem>
-                    <SelectItem value="24">24 weeks (6 months)</SelectItem>
-                    <SelectItem value="52">52 weeks (1 year)</SelectItem>
+                    <SelectItem value="4">4 weeks (1 month) 🌸</SelectItem>
+                    <SelectItem value="8">8 weeks (2 months) 🌺</SelectItem>
+                    <SelectItem value="12">12 weeks (3 months) 💐</SelectItem>
+                    <SelectItem value="16">16 weeks (4 months) 🌷</SelectItem>
+                    <SelectItem value="20">20 weeks (5 months) 🌹</SelectItem>
+                    <SelectItem value="24">24 weeks (6 months) 🌻</SelectItem>
+                    <SelectItem value="52">52 weeks (1 year) 🎉</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <Button
                 onClick={calculateWeightLossGoal}
-                className="w-full bg-gradient-to-r from-[#D4A574] to-[#B8935F] hover:from-[#C49464] hover:to-[#A8834F] text-white"
+                className="w-full kawaii-button h-12 text-lg"
                 disabled={!currentWeight || !targetWeight || parseFloat(currentWeight) <= parseFloat(targetWeight)}
               >
-                Calculate My Plan
+                <Sparkles className="h-5 w-5 mr-2" />
+                Calculate My Plan ✨
               </Button>
             </CardContent>
           </Card>
@@ -660,62 +692,68 @@ export default function CalculatorPage() {
           <div className="space-y-4">
             {goalResults ? (
               <>
-                <Card className="luxury-card border-l-4 border-l-[#2D5A4A]">
+                <Card className="kawaii-card border-l-4 border-l-[#A8E6CF]">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg text-[#2C1810] flex items-center gap-2">
-                      <Calendar className="h-5 w-5 text-[#2D5A4A]" />
+                    <CardTitle className="text-lg text-[#5D4E6D] flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#A8E6CF] to-[#88D8B0] flex items-center justify-center">
+                        <Calendar className="h-4 w-4 text-white" />
+                      </div>
                       Timeline
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-3xl font-bold text-[#2C1810]">{goalResults.weeksNeeded} weeks</p>
-                    <p className="text-sm text-[#6B5B4F] mt-1">
-                      Lose <strong>{goalResults.weightLossPerWeek} kg/week</strong> to reach your goal
+                    <p className="text-3xl font-bold text-[#2D5A4A]">{goalResults.weeksNeeded} weeks</p>
+                    <p className="text-sm text-[#8B7B8B] mt-1">
+                      Lose <strong className="text-[#FF8FA3]">{goalResults.weightLossPerWeek} kg/week</strong> to reach your goal 🎯
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="luxury-card border-l-4 border-l-[#D4A574]">
+                <Card className="kawaii-card border-l-4 border-l-[#FFB4A2]">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg text-[#2C1810] flex items-center gap-2">
-                      <Flame className="h-5 w-5 text-[#D4A574]" />
+                    <CardTitle className="text-lg text-[#5D4E6D] flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFB4A2] to-[#FF8FA3] flex items-center justify-center">
+                        <Flame className="h-4 w-4 text-white" />
+                      </div>
                       Daily Calorie Target
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-3xl font-bold text-[#2C1810]">{goalResults.dailyCalorieTarget.toLocaleString()}</p>
-                    <p className="text-sm text-[#6B5B4F] mt-1">
-                      calories/day ({goalResults.calorieDeficit} cal deficit)
+                    <p className="text-3xl font-bold text-[#FF8FA3]">{goalResults.dailyCalorieTarget.toLocaleString()}</p>
+                    <p className="text-sm text-[#8B7B8B] mt-1">
+                      calories/day ({goalResults.calorieDeficit} cal deficit) 🔥
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="luxury-card border-l-4 border-l-[#C9A961]">
+                <Card className="kawaii-card border-l-4 border-l-[#B8A9C9]">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg text-[#2C1810] flex items-center gap-2">
-                      <Clock className="h-5 w-5 text-[#C9A961]" />
+                    <CardTitle className="text-lg text-[#5D4E6D] flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#B8A9C9] to-[#A899B9] flex items-center justify-center">
+                        <Clock className="h-4 w-4 text-white" />
+                      </div>
                       Recommended Fasting Method
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-2xl font-bold text-[#2C1810]">{goalResults.recommendedMethod}</p>
-                    <p className="text-sm text-[#6B5B4F] mt-1">{goalResults.methodDescription}</p>
-                    <div className="flex items-center gap-4 mt-3 text-sm text-[#6B5B4F]">
-                      <span className="flex items-center gap-1">
-                        <Utensils className="h-4 w-4" />
+                    <p className="text-2xl font-bold text-[#B8A9C9]">{goalResults.recommendedMethod}</p>
+                    <p className="text-sm text-[#8B7B8B] mt-1">{goalResults.methodDescription}</p>
+                    <div className="flex items-center gap-4 mt-3 text-sm text-[#8B7B8B]">
+                      <span className="flex items-center gap-1 bg-[#FFF5F7] px-3 py-1 rounded-full">
+                        <Utensils className="h-4 w-4 text-[#FF8FA3]" />
                         {goalResults.mealsPerDay} meals/day
                       </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
+                      <span className="flex items-center gap-1 bg-[#E8E0F0] px-3 py-1 rounded-full">
+                        <Clock className="h-4 w-4 text-[#B8A9C9]" />
                         {goalResults.eatingWindow} eating window
                       </span>
                     </div>
                     <Button
                       onClick={() => startFasting(goalResults.recommendedMethod)}
-                      className="w-full mt-4 bg-gradient-to-r from-[#2D5A4A] to-[#1E3D32] hover:from-[#234A3A] hover:to-[#152D25] text-white"
+                      className="w-full mt-4 kawaii-button"
                     >
                       <Play className="h-4 w-4 mr-2" />
-                      Start {goalResults.recommendedMethod} Fast
+                      Start {goalResults.recommendedMethod} Fast 🐰
                     </Button>
                   </CardContent>
                 </Card>
@@ -724,16 +762,16 @@ export default function CalculatorPage() {
                 <Button
                   onClick={saveGoal}
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-[#D4A574] to-[#B8935F] hover:from-[#C49464] hover:to-[#A8834F] text-white h-12"
+                  className="w-full kawaii-button-accent h-12 text-lg"
                 >
-                  {isLoading ? "Saving..." : "💾 Save This Goal & Track Progress"}
+                  {isLoading ? "Saving... 💕" : "💾 Save This Goal & Track Progress"}
                 </Button>
               </>
             ) : (
-              <Card className="luxury-card h-full flex items-center justify-center">
+              <Card className="kawaii-card h-full flex items-center justify-center">
                 <CardContent className="text-center p-8">
-                  <Target className="h-12 w-12 text-[#D4A574] mx-auto mb-4" />
-                  <p className="text-[#6B5B4F]">
+                  <Mascot type="bunny-eating" size="lg" />
+                  <p className="text-[#8B7B8B] mt-4">
                     Enter your weight loss goal to get a personalized fasting plan
                   </p>
                 </CardContent>
@@ -746,42 +784,43 @@ export default function CalculatorPage() {
       {/* Past Goals History */}
       {savedGoals.length > 0 && (
         <div className="mt-8">
-          <h3 className="text-xl font-bold text-[#2C1810] mb-4 flex items-center gap-2">
-            <CheckCircle2 className="h-5 w-5 text-[#2D5A4A]" />
+          <h3 className="text-xl font-bold text-[#5D4E6D] mb-4 flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-[#A8E6CF]" />
             Your Goals History
+            <Mascot type="bear-sleepy" size="sm" />
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {savedGoals.map((goal) => (
-              <Card key={goal.id} className={`luxury-card ${goal.isActive ? 'border-l-4 border-l-[#2D5A4A]' : 'opacity-75'}`}>
+              <Card key={goal.id} className={`kawaii-card ${goal.isActive ? 'border-l-4 border-l-[#FF8FA3]' : 'opacity-75'}`}>
                 <CardContent className="p-4">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <p className="font-medium text-[#2C1810]">
+                      <p className="font-medium text-[#5D4E6D]">
                         {goal.currentWeight} kg → {goal.targetWeight} kg
                       </p>
-                      <p className="text-sm text-[#6B5B4F]">
+                      <p className="text-sm text-[#8B7B8B]">
                         {goal.recommendedMethod} • {goal.timeframeWeeks} weeks
                       </p>
                     </div>
                     <div className="flex gap-1">
                       {goal.isActive ? (
-                        <span className="text-xs bg-[#2D5A4A] text-white px-2 py-1 rounded-full">Active</span>
+                        <span className="text-xs bg-gradient-to-r from-[#FF8FA3] to-[#FFB4C2] text-white px-3 py-1 rounded-full">Active 💕</span>
                       ) : goal.completedDate ? (
-                        <span className="text-xs bg-[#C9A961] text-white px-2 py-1 rounded-full">Completed</span>
+                        <span className="text-xs bg-gradient-to-r from-[#A8E6CF] to-[#88D8B0] text-white px-3 py-1 rounded-full">Completed 🎉</span>
                       ) : (
-                        <span className="text-xs bg-gray-400 text-white px-2 py-1 rounded-full">Inactive</span>
+                        <span className="text-xs bg-[#E8E0F0] text-[#8B7B8B] px-3 py-1 rounded-full">Inactive</span>
                       )}
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
-                    <p className="text-sm text-[#6B5B4F]">
+                    <p className="text-sm text-[#8B7B8B]">
                       Started {format(new Date(goal.startDate), "MMM d, yyyy")}
                     </p>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => deleteGoal(goal.id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-[#FF8FA3] hover:text-[#FF6B85] hover:bg-[#FFE4E9] rounded-full"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -794,39 +833,43 @@ export default function CalculatorPage() {
       )}
 
       {/* Info Card */}
-      <Card className="luxury-card mt-8">
+      <Card className="kawaii-card mt-8">
         <CardHeader>
-          <CardTitle className="text-[#2C1810]">About These Calculations</CardTitle>
+          <CardTitle className="text-[#5D4E6D] flex items-center gap-2">
+            <Info className="h-5 w-5 text-[#B8A9C9]" />
+            About These Calculations
+            <Mascot type="bunny" size="sm" />
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm text-[#6B5B4F]">
+        <CardContent className="space-y-4 text-sm text-[#8B7B8B]">
           <p>
-            <strong className="text-[#2C1810]">BMR (Basal Metabolic Rate):</strong> The number of calories your body
+            <strong className="text-[#FF8FA3]">BMR (Basal Metabolic Rate):</strong> The number of calories your body
             needs to maintain basic life functions at rest. Calculated using the
-            Mifflin-St Jeor equation.
+            Mifflin-St Jeor equation. 🔥
           </p>
           <p>
-            <strong className="text-[#2C1810]">TDEE (Total Daily Energy Expenditure):</strong> Your BMR multiplied
+            <strong className="text-[#B8A9C9]">TDEE (Total Daily Energy Expenditure):</strong> Your BMR multiplied
             by an activity factor based on your exercise level. This represents the
-            calories needed to maintain your current weight.
+            calories needed to maintain your current weight. 💜
           </p>
           <p>
-            <strong className="text-[#2C1810]">Weight Loss Calculation:</strong> Based on the principle that 
+            <strong className="text-[#A8E6CF]">Weight Loss Calculation:</strong> Based on the principle that 
             1kg of body fat contains approximately 7,700 calories. To lose weight safely,
-            we recommend a moderate calorie deficit of 500-1000 calories per day.
+            we recommend a moderate calorie deficit of 500-1000 calories per day. 🌿
           </p>
           <p>
-            <strong className="text-[#2C1810]">Fasting Method Recommendations:</strong>
+            <strong className="text-[#5D4E6D]">Fasting Method Recommendations:</strong>
           </p>
           <ul className="list-disc list-inside space-y-1 ml-2">
-            <li><strong>OMAD (23:1):</strong> For aggressive weight loss (&gt;1kg/week)</li>
-            <li><strong>20:4 (Warrior):</strong> For steady weight loss (0.7-1kg/week)</li>
-            <li><strong>18:6:</strong> For moderate weight loss (0.5-0.7kg/week)</li>
-            <li><strong>16:8:</strong> For gradual weight loss (&lt;0.5kg/week)</li>
+            <li><strong className="text-[#FF8FA3]">OMAD (23:1):</strong> For aggressive weight loss (&gt;1kg/week) 🐰</li>
+            <li><strong className="text-[#FFB4A2]">20:4 (Warrior):</strong> For steady weight loss (0.7-1kg/week) 🐻</li>
+            <li><strong className="text-[#B8A9C9]">18:6:</strong> For moderate weight loss (0.5-0.7kg/week) 💜</li>
+            <li><strong className="text-[#A8E6CF]">16:8:</strong> For gradual weight loss (&lt;0.5kg/week) 🌸</li>
           </ul>
-          <p className="text-xs text-[#6B5B4F] mt-4">
-            <strong className="text-[#2C1810]">Note:</strong> These are estimates. Individual results may vary based on metabolism,
+          <p className="text-xs text-[#8B7B8B] mt-4 bg-[#FFF5F7] p-3 rounded-2xl">
+            <strong className="text-[#FF8FA3]">Note:</strong> These are estimates. Individual results may vary based on metabolism,
             body composition, and other factors. Consult a healthcare professional
-            for personalized advice. Never consume fewer than 1,200 calories per day without medical supervision.
+            for personalized advice. Never consume fewer than 1,200 calories per day without medical supervision. 💕
           </p>
         </CardContent>
       </Card>

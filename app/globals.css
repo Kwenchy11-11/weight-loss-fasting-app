@@ -1,44 +1,52 @@
 @import "tailwindcss";
 
 :root {
-  /* Luxury Feminine Color Palette */
-  --background: #FFFBF7;
-  --foreground: #2C1810;
+  /* Kawaii Pastel Pink Color Palette */
+  --background: #FFF5F7;
+  --foreground: #5D4E6D;
   
-  /* Primary - Rose Gold / Blush */
-  --primary: #D4A574;
+  /* Primary - Soft Pink */
+  --primary: #FF8FA3;
   --primary-foreground: #FFFFFF;
-  --primary-light: #F5E6D3;
-  --primary-dark: #B8935F;
+  --primary-light: #FFE4E9;
+  --primary-dark: #FF6B85;
   
-  /* Secondary - Deep Emerald */
-  --secondary: #2D5A4A;
+  /* Secondary - Soft Purple/Lavender */
+  --secondary: #B8A9C9;
   --secondary-foreground: #FFFFFF;
-  --secondary-light: #E8F5E9;
+  --secondary-light: #E8E0F0;
   
-  /* Accent - Champagne Gold */
-  --accent: #C9A961;
-  --accent-foreground: #2C1810;
+  /* Accent - Soft Coral/Peach */
+  --accent: #FFB4A2;
+  --accent-foreground: #FFFFFF;
+  --accent-light: #FFD5CC;
   
-  /* Neutral - Warm Grays */
-  --muted: #F5F0EB;
-  --muted-foreground: #6B5B4F;
-  --border: #E8DDD4;
+  /* Success - Soft Mint */
+  --success: #A8E6CF;
+  --success-foreground: #2D5A4A;
+  --success-light: #D4F5E9;
+  
+  /* Warning - Soft Yellow */
+  --warning: #FFEAA7;
+  --warning-foreground: #8B7355;
+  
+  /* Neutral - Soft Warm Tones */
+  --muted: #F8F0F3;
+  --muted-foreground: #8B7B8B;
+  --border: #F0D5DC;
   --card: #FFFFFF;
-  --card-foreground: #2C1810;
+  --card-foreground: #5D4E6D;
   
   /* Semantic Colors */
-  --destructive: #DC2626;
+  --destructive: #FF8FA3;
   --destructive-foreground: #FFFFFF;
-  --success: #2D5A4A;
-  --success-foreground: #FFFFFF;
-  --warning: #D97706;
-  --warning-foreground: #FFFFFF;
   
-  /* Gradients */
-  --gradient-luxury: linear-gradient(135deg, #FFFBF7 0%, #F5E6D3 50%, #E8DDD4 100%);
-  --gradient-rose: linear-gradient(135deg, #F5E6D3 0%, #E8B4B8 100%);
-  --gradient-emerald: linear-gradient(135deg, #2D5A4A 0%, #1B4332 100%);
+  /* Kawaii Gradients */
+  --gradient-kawaii: linear-gradient(135deg, #FFF5F7 0%, #FFE4E9 50%, #FFD5E5 100%);
+  --gradient-pink: linear-gradient(135deg, #FF8FA3 0%, #FFB4C2 100%);
+  --gradient-lavender: linear-gradient(135deg, #B8A9C9 0%, #D4C4E0 100%);
+  --gradient-peach: linear-gradient(135deg, #FFB4A2 0%, #FFD5CC 100%);
+  --gradient-mint: linear-gradient(135deg, #A8E6CF 0%, #D4F5E9 100%);
 }
 
 @theme inline {
@@ -57,6 +65,8 @@
   --color-card-foreground: var(--card-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -67,60 +77,192 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* Luxury Card Styling */
-.luxury-card {
-  background: linear-gradient(145deg, #FFFFFF 0%, #FFFBF7 100%);
-  border: 1px solid var(--border);
+/* Kawaii Card Styling */
+.kawaii-card {
+  background: #FFFFFF;
+  border: 2px solid var(--border);
   box-shadow: 
-    0 4px 6px -1px rgba(44, 24, 16, 0.05),
-    0 2px 4px -1px rgba(44, 24, 16, 0.03),
+    0 8px 32px rgba(255, 143, 163, 0.15),
+    0 2px 8px rgba(255, 143, 163, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border-radius: 16px;
+  border-radius: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Elegant Button Styling */
-.luxury-button {
+.kawaii-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 40px rgba(255, 143, 163, 0.2),
+    0 4px 12px rgba(255, 143, 163, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Kawaii Button Styling */
+.kawaii-button {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
   border: none;
+  border-radius: 20px;
   box-shadow: 
-    0 4px 14px rgba(212, 165, 116, 0.4),
+    0 4px 16px rgba(255, 143, 163, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+}
+
+.kawaii-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 6px 24px rgba(255, 143, 163, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.kawaii-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Secondary Kawaii Button */
+.kawaii-button-secondary {
+  background: linear-gradient(135deg, var(--secondary) 0%, #A899B9 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 
+    0 4px 16px rgba(184, 169, 201, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+}
+
+.kawaii-button-secondary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 6px 24px rgba(184, 169, 201, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Accent Kawaii Button */
+.kawaii-button-accent {
+  background: linear-gradient(135deg, var(--accent) 0%, #FF9A8B 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 
+    0 4px 16px rgba(255, 180, 162, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+}
+
+.kawaii-button-accent:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 6px 24px rgba(255, 180, 162, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Kawaii Input Styling */
+.kawaii-input {
+  background: #FFFFFF;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
-.luxury-button:hover {
-  transform: translateY(-2px);
+.kawaii-input:focus {
+  border-color: var(--primary);
   box-shadow: 
-    0 6px 20px rgba(212, 165, 116, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    inset 0 2px 4px rgba(0, 0, 0, 0.05),
+    0 0 0 4px rgba(255, 143, 163, 0.15);
+  outline: none;
 }
 
 /* Gradient Text */
-.gradient-text {
-  background: linear-gradient(135deg, #2D5A4A 0%, #D4A574 50%, #C9A961 100%);
+.gradient-text-kawaii {
+  background: linear-gradient(135deg, #FF8FA3 0%, #B8A9C9 50%, #FFB4A2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 /* Section Backgrounds */
-.bg-luxury-gradient {
-  background: linear-gradient(180deg, #FFFBF7 0%, #F5E6D3 50%, #E8DDD4 100%);
+.bg-kawaii-gradient {
+  background: linear-gradient(180deg, #FFF5F7 0%, #FFE4E9 50%, #FFD5E5 100%);
 }
 
-.bg-rose-gradient {
-  background: linear-gradient(135deg, #FDF8F3 0%, #F5E6D3 50%, #E8B4B8 100%);
+.bg-pink-gradient {
+  background: linear-gradient(135deg, #FFE4E9 0%, #FFD5E5 50%, #FFC4D6 100%);
 }
 
 /* High Contrast Text */
 .text-high-contrast {
-  color: #2C1810;
-  font-weight: 500;
+  color: #5D4E6D;
+  font-weight: 600;
 }
 
 .text-subtle {
-  color: #6B5B4F;
+  color: #8B7B8B;
+}
+
+/* Kawaii Badge/Pill */
+.kawaii-badge {
+  background: linear-gradient(135deg, var(--primary-light) 0%, #FFF0F3 100%);
+  color: var(--primary-dark);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+/* Kawaii Progress Bar */
+.kawaii-progress {
+  background: var(--primary-light);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.kawaii-progress-bar {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse Animation for Timer */
+@keyframes kawaii-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 143, 163, 0.4);
+  }
+  50% { 
+    transform: scale(1.02);
+    box-shadow: 0 0 0 20px rgba(255, 143, 163, 0);
+  }
+}
+
+.animate-kawaii-pulse {
+  animation: kawaii-pulse 2s ease-in-out infinite;
+}
+
+/* Sparkle Animation */
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.animate-sparkle {
+  animation: sparkle 1.5s ease-in-out infinite;
 }
 
 /* Mobile Optimizations */
@@ -150,15 +292,15 @@ html {
 
 /* Mobile-specific card adjustments */
 @media (max-width: 640px) {
-  .luxury-card {
-    border-radius: 12px;
+  .kawaii-card {
+    border-radius: 20px;
   }
 }
 
 /* iPad-specific optimizations */
 @media (min-width: 768px) and (max-width: 1024px) {
-  .luxury-card {
-    border-radius: 20px;
+  .kawaii-card {
+    border-radius: 28px;
   }
 }
 
@@ -167,4 +309,24 @@ html {
   input, select, textarea {
     font-size: 16px;
   }
+}
+
+/* Kawaii Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
