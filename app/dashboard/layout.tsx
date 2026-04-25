@@ -19,17 +19,17 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#FFFBF7]">
-      {/* Header */}
+      {/* Header - Mobile Optimized */}
       <header className="bg-white/80 backdrop-blur-md border-b border-[#E8DDD4] sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="container mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#D4A574] to-[#B8935F] rounded-lg flex items-center justify-center">
-              <Clock className="h-4 w-4 text-white" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-[#D4A574] to-[#B8935F] rounded-lg flex items-center justify-center">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
             </div>
-            <span className="font-bold text-xl text-[#2C1810]">Fasting Tracker</span>
+            <span className="font-bold text-lg sm:text-xl text-[#2C1810]">Fasting Tracker</span>
           </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-[#6B5B4F] hidden sm:inline">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="text-xs sm:text-sm text-[#6B5B4F] hidden sm:inline truncate max-w-[150px]">
               {session.user?.name || session.user?.email}
             </span>
             <SignOutButton />
@@ -96,39 +96,34 @@ export default async function DashboardLayout({
           </div>
         </aside>
 
-        {/* Mobile Navigation */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8DDD4] z-50">
-          <div className="flex justify-around p-2">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="text-[#6B5B4F]">
-                <Home className="h-5 w-5" />
-              </Button>
+        {/* Mobile Navigation - iPad/Mobile Optimized */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-[#E8DDD4] z-50 safe-area-pb">
+          <div className="flex justify-around items-center py-2 px-1">
+            <Link href="/dashboard" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
+              <Home className="h-5 w-5 text-[#6B5B4F]" />
+              <span className="text-[10px] text-[#6B5B4F] font-medium">Home</span>
             </Link>
-            <Link href="/dashboard/fasting">
-              <Button variant="ghost" size="sm" className="text-[#6B5B4F]">
-                <Clock className="h-5 w-5" />
-              </Button>
+            <Link href="/dashboard/fasting" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
+              <Clock className="h-5 w-5 text-[#6B5B4F]" />
+              <span className="text-[10px] text-[#6B5B4F] font-medium">Fast</span>
             </Link>
-            <Link href="/dashboard/weight">
-              <Button variant="ghost" size="sm" className="text-[#6B5B4F]">
-                <Scale className="h-5 w-5" />
-              </Button>
+            <Link href="/dashboard/weight" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
+              <Scale className="h-5 w-5 text-[#6B5B4F]" />
+              <span className="text-[10px] text-[#6B5B4F] font-medium">Weight</span>
             </Link>
-            <Link href="/dashboard/calculator">
-              <Button variant="ghost" size="sm" className="text-[#6B5B4F]">
-                <Calculator className="h-5 w-5" />
-              </Button>
+            <Link href="/dashboard/calculator" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
+              <Calculator className="h-5 w-5 text-[#6B5B4F]" />
+              <span className="text-[10px] text-[#6B5B4F] font-medium">Calc</span>
             </Link>
-            <Link href="/dashboard/export">
-              <Button variant="ghost" size="sm" className="text-[#6B5B4F]">
-                <Download className="h-5 w-5" />
-              </Button>
+            <Link href="/dashboard/export" className="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg active:bg-[#F5E6D3]">
+              <Download className="h-5 w-5 text-[#6B5B4F]" />
+              <span className="text-[10px] text-[#6B5B4F] font-medium">Export</span>
             </Link>
           </div>
         </nav>
 
-        {/* Main Content */}
-        <main className="flex-1 p-4 md:p-8 pb-20 md:pb-8">
+        {/* Main Content - Mobile Optimized */}
+        <main className="flex-1 p-3 sm:p-4 md:p-8 pb-24 md:pb-8 max-w-7xl mx-auto w-full">
           {children}
         </main>
       </div>

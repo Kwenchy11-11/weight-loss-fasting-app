@@ -122,3 +122,49 @@ body {
 .text-subtle {
   color: #6B5B4F;
 }
+
+/* Mobile Optimizations */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Touch-friendly interactions */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection on interactive elements */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-specific card adjustments */
+@media (max-width: 640px) {
+  .luxury-card {
+    border-radius: 12px;
+  }
+}
+
+/* iPad-specific optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .luxury-card {
+    border-radius: 20px;
+  }
+}
+
+/* Prevent zoom on input focus for iOS */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
