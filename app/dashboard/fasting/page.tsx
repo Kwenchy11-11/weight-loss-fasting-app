@@ -1,15 +1,25 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
-import { Clock, Play, Square, History, Smartphone, Bell } from "lucide-react";
+import { 
+  Home, 
+  Clock, 
+  History, 
+  BarChart3, 
+  Target, 
+  User, 
+  Settings,
+  ChevronLeft,
+  Play,
+  Square
+} from "lucide-react";
+import { Mascot } from "@/components/mascot";
 import { formatDistanceToNow, format } from "date-fns";
 
-type FastingMode = "OMAD" | "WARRIOR";
+type FastingMode = "OMAD" | "WARRIOR" | "16:8" | "18:6" | "20:4";
 
 interface FastingSession {
   id: string;
@@ -20,23 +30,134 @@ interface FastingSession {
   endTime?: string;
 }
 
-function FastingTimerContent() {
-  const searchParams = useSearchParams();
-  const modeParam = searchParams.get("mode");
-  
+// Circular Timer Component
+function CircularTimer({ 
+  timeLeft, 
+  progress,
+  isActive 
+}: { 
+  timeLeft: string; 
+  progress: number;
+  isActive: boolean;
+}) {
+  const radius = 100;
+  const strokeWidth = 14;
+  const normalizedRadius = radius - strokeWidth / 2;
+  const circumference = normalizedRadius * 2 * Math.PI;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+  return (
+    <div className="relative flex items-center justify-center">
+      <svg width={220} height={220} className="transform -rotate-90">
+        <defs>
+          <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#FF8FA3" />
+            <stop offset="50%" stopColor="#FFB6C1" />
+            <stop offset="100%" stopColor="#FFC0CB" />
+          </linearGradient>
+        </defs>
+        <circle
+          stroke="#FFE4EC"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          r={normalizedRadius}
+          cx={110}
+          cy={110}
+        />
+        <circle
+          stroke="url(#timerGradient)"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          fill="transparent"
+          r={normalizedRadius}
+          cx={110}
+          cy={110}
+          style={{
+            strokeDasharray: circumference + ' ' + circumference,
+            strokeDashoffset: strokeDashoffset,
+            transition: 'stroke-dashoffset 1s linear',
+          }}
+        />
+      </svg>
+      <div className="absolute flex flex-col items-center">
+        <span className="text-4xl font-bold text-[#5D4E6D]">{timeLeft}</span>
+        <span className="text-sm text-[#8B7B8B] mt-1">
+          {isActive ? "เหลือเวลา" : "พร้อมเริ่ม"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// Fasting Plan Option
+function FastingPlan({ 
+  mode, 
+  label, 
+  description, 
+  selected, 
+  onClick 
+}: { 
+  mode: string;
+  label: string;
+  description: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`p-4 rounded-2xl border-2 transition-all duration-200 text-left ${
+        selected 
+          ? 'border-[#FF8FA3] bg-gradient-to-br from-[#FFE4EC] to-[#FFF5F7]' 
+          : 'border-[#FFE4EC] bg-white hover:border-[#FFB6C1]'
+      }`}
+    >
+      <div className="font-semibold text-[#5D4E6D] mb-1">{mode}</div>
+      <div className="text-xs text-[#8B7B8B]">{label}</div>
+      <div className="text-xs text-[#FF8FA3] mt-1">{description}</div>
+    </button>
+  );
+}
+
+// History Item
+function HistoryItem({ 
+  date, 
+  duration, 
+  status 
+}: { 
+  date: string; 
+  duration: string; 
+  status: string;
+}) {
+  const statusColors = {
+    completed: "text-[#4ADE80]",
+    active: "text-[#FF8FA3]",
+    broken: "text-[#FB7185]",
+  };
+
+  return (
+    <div className="flex items-center justify-between p-3 bg-white rounded-2xl border border-[#FFE4EC]">
+      <div className="flex items-center gap-3">
+        <div className={`w-2 h-2 rounded-full ${status === 'completed' ? 'bg-[#4ADE80]' : status === 'active' ? 'bg-[#FF8FA3]' : 'bg-[#FB7185]'}`} />
+        <div>
+          <div className="text-sm font-medium text-[#5D4E6D]">{date}</div>
+          <div className="text-xs text-[#8B7B8B]">{duration}</div>
+        </div>
+      </div>
+      <div className={`text-sm font-medium ${statusColors[status as keyof typeof statusColors] || 'text-[#8B7B8B]'}`}>
+        {status === 'completed' ? 'สำเร็จ' : status === 'active' ? 'กำลังอด' : 'หยุดกลางคัน'}
+      </div>
+    </div>
+  );
+}
+
+export default function FastingPage() {
   const [activeSession, setActiveSession] = useState<FastingSession | null>(null);
   const [pastSessions, setPastSessions] = useState<FastingSession[]>([]);
   const [selectedMode, setSelectedMode] = useState<FastingMode>("OMAD");
   const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState<string>("");
-  const [progress, setProgress] = useState<number>(0);
-
-  // Set mode from URL parameter on mount
-  useEffect(() => {
-    if (modeParam === "WARRIOR" || modeParam === "OMAD") {
-      setSelectedMode(modeParam);
-    }
-  }, [modeParam]);
+  const [timeLeft, setTimeLeft] = useState("16:08:32");
+  const [progress, setProgress] = useState(65);
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -44,7 +165,7 @@ function FastingTimerContent() {
       if (response.ok) {
         const data = await response.json();
         setActiveSession(data.activeSession);
-        setPastSessions(data.sessions);
+        setPastSessions(data.sessions || []);
       }
     } catch (error) {
       console.error("Error fetching sessions:", error);
@@ -55,23 +176,9 @@ function FastingTimerContent() {
     fetchSessions();
   }, [fetchSessions]);
 
-  // Check for existing timer state and restore wake lock if active
-  useEffect(() => {
-    if (activeSession && !wakeLock) {
-      requestWakeLock();
-      
-      // Restore timer in service worker
-      sendTimerToServiceWorker(
-        "START_TIMER",
-        activeSession.targetEndTime,
-        activeSession.mode === "OMAD" ? "OMAD (23:1)" : "Warrior (20:4)"
-      );
-    }
-  }, [activeSession]);
-
   useEffect(() => {
     if (!activeSession) {
-      setTimeLeft("");
+      setTimeLeft("00:00:00");
       setProgress(0);
       return;
     }
@@ -84,7 +191,7 @@ function FastingTimerContent() {
       const remaining = target - now;
 
       if (remaining <= 0) {
-        setTimeLeft("Fasting complete!");
+        setTimeLeft("00:00:00");
         setProgress(100);
         clearInterval(interval);
         return;
@@ -94,52 +201,14 @@ function FastingTimerContent() {
       const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
 
-      setTimeLeft(`${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
+      setTimeLeft(
+        `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+      );
       setProgress(((total - remaining) / total) * 100);
     }, 1000);
 
     return () => clearInterval(interval);
   }, [activeSession]);
-
-  // Wake Lock to keep screen on during fasting
-  const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
-  const [isWakeLockSupported, setIsWakeLockSupported] = useState(false);
-
-  useEffect(() => {
-    setIsWakeLockSupported("wakeLock" in navigator);
-  }, []);
-
-  const requestWakeLock = async () => {
-    if (!isWakeLockSupported) return;
-    try {
-      const lock = await navigator.wakeLock.request("screen");
-      setWakeLock(lock);
-      
-      lock.addEventListener("release", () => {
-        setWakeLock(null);
-      });
-    } catch (err) {
-      console.error("Wake Lock error:", err);
-    }
-  };
-
-  const releaseWakeLock = () => {
-    if (wakeLock) {
-      wakeLock.release();
-      setWakeLock(null);
-    }
-  };
-
-  // Send timer state to service worker
-  const sendTimerToServiceWorker = (type: "START_TIMER" | "STOP_TIMER", endTime?: string, mode?: string) => {
-    if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type,
-        endTime,
-        mode,
-      });
-    }
-  };
 
   const startFasting = async () => {
     setLoading(true);
@@ -151,30 +220,7 @@ function FastingTimerContent() {
       });
 
       if (response.ok) {
-        const data = await response.json();
         await fetchSessions();
-        
-        // Request wake lock to keep screen on
-        await requestWakeLock();
-        
-        // Send timer to service worker for persistent notification
-        if (data.session) {
-          sendTimerToServiceWorker(
-            "START_TIMER",
-            data.session.targetEndTime,
-            selectedMode === "OMAD" ? "OMAD (23:1)" : "Warrior (20:4)"
-          );
-        }
-        
-        // Request background sync if available
-        if ("serviceWorker" in navigator && "SyncManager" in window) {
-          const registration = await navigator.serviceWorker.ready;
-          try {
-            await (registration as any).sync.register("timer-update");
-          } catch (err) {
-            console.error("Background sync registration failed:", err);
-          }
-        }
       }
     } catch (error) {
       console.error("Error starting fast:", error);
@@ -185,18 +231,9 @@ function FastingTimerContent() {
   const stopFasting = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/fasting", {
-        method: "PATCH",
-      });
-
+      const response = await fetch("/api/fasting", { method: "PATCH" });
       if (response.ok) {
         await fetchSessions();
-        
-        // Release wake lock
-        releaseWakeLock();
-        
-        // Stop timer in service worker
-        sendTimerToServiceWorker("STOP_TIMER");
       }
     } catch (error) {
       console.error("Error stopping fast:", error);
@@ -204,180 +241,191 @@ function FastingTimerContent() {
     setLoading(false);
   };
 
-  const getModeLabel = (mode: FastingMode) => {
-    return mode === "OMAD" ? "OMAD (23:1)" : "Warrior Diet (20:4)";
-  };
-
-  const getModeDescription = (mode: FastingMode) => {
-    return mode === "OMAD"
-      ? "One Meal A Day - Fast for 23 hours, eat within 1 hour"
-      : "Warrior Diet - Fast for 20 hours, eat within 4 hours";
-  };
+  const fastingPlans = [
+    { mode: "16:8" as FastingMode, label: "เริ่มต้น", description: "อด 16 ชม. กิน 8 ชม." },
+    { mode: "18:6" as FastingMode, label: "ปานกลาง", description: "อด 18 ชม. กิน 6 ชม." },
+    { mode: "20:4" as FastingMode, label: "เร่งด่วน", description: "อด 20 ชม. กิน 4 ชม." },
+    { mode: "OMAD" as FastingMode, label: "เร่งด่วนที่สุด", description: "อด 23 ชม. กิน 1 ชม." },
+  ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Fasting Timer</h1>
-        <p className="text-gray-600">Track your intermittent fasting sessions</p>
-      </div>
+    <div className="flex min-h-screen bg-gradient-to-br from-[#FFF5F7] via-[#FFE4EC] to-[#FFD5E5]">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white/80 backdrop-blur-sm border-r border-[#FFE4EC] hidden md:flex flex-col">
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-8">
+            <Mascot type="bunny" size="sm" />
+            <span className="font-bold text-[#5D4E6D]">Fasting Tracker</span>
+          </div>
 
-      {/* Active Timer */}
-      <Card className={activeSession ? "border-green-500" : ""}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5" />
-            {activeSession ? "Active Fast" : "Start New Fast"}
-          </CardTitle>
-          <CardDescription>
-            {activeSession
-              ? `${getModeLabel(activeSession.mode)} - Started ${formatDistanceToNow(
-                  new Date(activeSession.startTime)
-                )} ago`
-              : "Choose your fasting mode and start tracking"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {!activeSession ? (
-            <>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Fasting Mode</label>
-                <Select
-                  value={selectedMode}
-                  onValueChange={(value: FastingMode) => setSelectedMode(value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="OMAD">OMAD (23:1)</SelectItem>
-                    <SelectItem value="WARRIOR">Warrior Diet (20:4)</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-sm text-gray-600">
-                  {getModeDescription(selectedMode)}
-                </p>
-              </div>
-              <Button
-                onClick={startFasting}
-                disabled={loading}
-                className="w-full"
-                size="lg"
-              >
-                <Play className="mr-2 h-4 w-4" />
-                Start Fasting
-              </Button>
-            </>
-          ) : (
-            <>
-              <div className="text-center space-y-4">
-                <div className="text-6xl font-bold font-mono">{timeLeft}</div>
-                <Progress value={progress} className="w-full" />
-                <p className="text-sm text-gray-600">
-                  Target end time: {format(new Date(activeSession.targetEndTime), "PPp")}
-                </p>
-                
-                {/* Status indicators */}
-                <div className="flex justify-center gap-4 text-xs text-gray-500">
-                  {wakeLock && (
-                    <span className="flex items-center gap-1 bg-green-50 text-green-700 px-2 py-1 rounded-full">
-                      <Smartphone className="h-3 w-3" />
-                      Screen stays on
-                    </span>
-                  )}
-                  <span className="flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-full">
-                    <Bell className="h-3 w-3" />
-                    Timer in notifications
-                  </span>
-                </div>
-                
-                <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                  Keep this page open or check your notifications for timer updates. 
-                  The timer will notify you when complete.
-                </p>
-              </div>
-              <Button
-                onClick={stopFasting}
-                disabled={loading}
-                variant="destructive"
-                className="w-full"
-                size="lg"
-              >
-                <Square className="mr-2 h-4 w-4" />
-                End Fast
-              </Button>
-            </>
-          )}
-        </CardContent>
-      </Card>
+          <nav className="space-y-2">
+            <Link href="/dashboard" className="nav-item">
+              <Home className="h-5 w-5" />
+              <span className="text-sm font-medium">Dashboard</span>
+            </Link>
+            <Link href="/dashboard/fasting" className="nav-item active">
+              <Clock className="h-5 w-5" />
+              <span className="text-sm font-medium">Fasting</span>
+            </Link>
+            <Link href="/dashboard/history" className="nav-item">
+              <History className="h-5 w-5" />
+              <span className="text-sm font-medium">History</span>
+            </Link>
+            <Link href="/dashboard/statistics" className="nav-item">
+              <BarChart3 className="h-5 w-5" />
+              <span className="text-sm font-medium">Statistics</span>
+            </Link>
+            <Link href="/dashboard/goals" className="nav-item">
+              <Target className="h-5 w-5" />
+              <span className="text-sm font-medium">Goals</span>
+            </Link>
+            <Link href="/dashboard/profile" className="nav-item">
+              <User className="h-5 w-5" />
+              <span className="text-sm font-medium">Profile</span>
+            </Link>
+            <Link href="/dashboard/settings" className="nav-item">
+              <Settings className="h-5 w-5" />
+              <span className="text-sm font-medium">Settings</span>
+            </Link>
+          </nav>
+        </div>
+      </aside>
 
-      {/* Past Sessions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <History className="h-5 w-5" />
-            Recent Sessions
-          </CardTitle>
-          <CardDescription>Your last 10 completed fasting sessions</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {pastSessions.length === 0 ? (
-            <p className="text-center text-gray-600 py-8">
-              No completed fasting sessions yet. Start your first fast above!
+      {/* Main Content */}
+      <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <Link href="/dashboard" className="md:hidden">
+            <ChevronLeft className="h-6 w-6 text-[#5D4E6D]" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-[#5D4E6D]">กำลังอดอาหาร</h1>
+            <p className="text-sm text-[#8B7B8B]">
+              {activeSession ? "คุณกำลังอดอาหารอยู่" : "เริ่มการอดอาหารของคุณ"}
             </p>
-          ) : (
-            <div className="space-y-3">
-              {pastSessions.map((session) => (
-                <div
-                  key={session.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+          </div>
+        </div>
+
+        <div className="max-w-2xl mx-auto space-y-6">
+          {/* Timer Card */}
+          <Card className="kawaii-card p-8">
+            <div className="text-center mb-6">
+              <h2 className="text-lg font-semibold text-[#5D4E6D] mb-1">
+                {activeSession ? "กำลังอดอาหาร" : "พร้อมเริ่มอด"}
+              </h2>
+              {activeSession && (
+                <p className="text-sm text-[#8B7B8B]">
+                  เริ่มต้น {format(new Date(activeSession.startTime), "HH:mm")} - วันนี้
+                </p>
+              )}
+            </div>
+
+            <div className="flex justify-center mb-6">
+              <CircularTimer 
+                timeLeft={timeLeft}
+                progress={progress}
+                isActive={!!activeSession}
+              />
+            </div>
+
+            <div className="flex justify-center">
+              {activeSession ? (
+                <Button 
+                  onClick={stopFasting}
+                  disabled={loading}
+                  className="btn-pink px-8 py-3 text-base font-medium"
                 >
-                  <div>
-                    <p className="font-medium">{getModeLabel(session.mode)}</p>
-                    <p className="text-sm text-gray-600">
-                      {format(new Date(session.startTime), "PP")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">
-                      {session.endTime
-                        ? (() => {
-                            const start = new Date(session.startTime).getTime();
-                            const end = new Date(session.endTime).getTime();
-                            const duration = Math.floor((end - start) / (1000 * 60));
-                            return `${Math.floor(duration / 60)}h ${duration % 60}m`;
-                          })()
-                        : "—"}
-                    </p>
-                    <p className="text-sm text-gray-600">Duration</p>
-                  </div>
-                </div>
-              ))}
+                  <Square className="h-4 w-4 mr-2" />
+                  สิ้นสุดการอด
+                </Button>
+              ) : (
+                <Button 
+                  onClick={startFasting}
+                  disabled={loading}
+                  className="btn-pink px-8 py-3 text-base font-medium"
+                >
+                  <Play className="h-4 w-4 mr-2" />
+                  เริ่มอดอาหาร
+                </Button>
+              )}
+            </div>
+          </Card>
+
+          {/* Fasting Plans */}
+          {!activeSession && (
+            <div>
+              <h3 className="font-semibold text-[#5D4E6D] mb-3">เลือกแผนการอด</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {fastingPlans.map((plan) => (
+                  <FastingPlan
+                    key={plan.mode}
+                    mode={plan.mode}
+                    label={plan.label}
+                    description={plan.description}
+                    selected={selectedMode === plan.mode}
+                    onClick={() => setSelectedMode(plan.mode)}
+                  />
+                ))}
+              </div>
             </div>
           )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
 
-// Main export with Suspense wrapper
-export default function FastingPage() {
-  return (
-    <Suspense fallback={
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Fasting Timer</h1>
-          <p className="text-gray-600">Track your intermittent fasting sessions</p>
+          {/* History */}
+          <div>
+            <h3 className="font-semibold text-[#5D4E6D] mb-3">ประวัติการอดอาหาร</h3>
+            <div className="space-y-2">
+              {pastSessions.slice(0, 5).map((session) => (
+                <HistoryItem
+                  key={session.id}
+                  date={format(new Date(session.startTime), "dd MMM yyyy")}
+                  duration={session.endTime 
+                    ? `${Math.round((new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / (1000 * 60 * 60))} ชม.`
+                    : "ไม่ระบุ"
+                  }
+                  status={session.status}
+                />
+              ))}
+              {pastSessions.length === 0 && (
+                <div className="text-center py-8 text-[#8B7B8B]">
+                  <Mascot type="bunny" size="md" />
+                  <p className="mt-2">ยังไม่มีประวัติการอด</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Mascot */}
+          <div className="flex justify-center">
+            <Mascot type="bunny-happy" size="lg" />
+          </div>
         </div>
-        <Card>
-          <CardContent className="p-8 text-center">
-            <Clock className="h-8 w-8 mx-auto mb-4 text-gray-400 animate-pulse" />
-            <p className="text-gray-600">Loading...</p>
-          </CardContent>
-        </Card>
-      </div>
-    }>
-      <FastingTimerContent />
-    </Suspense>
+      </main>
+
+      {/* Mobile Navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-[#FFE4EC] z-50 safe-area-bottom">
+        <div className="flex justify-around items-center py-2">
+          <Link href="/dashboard" className="flex flex-col items-center gap-1 p-2">
+            <Home className="h-5 w-5 text-[#8B7B8B]" />
+            <span className="text-[10px] text-[#8B7B8B]">หน้าหลัก</span>
+          </Link>
+          <Link href="/dashboard/fasting" className="flex flex-col items-center gap-1 p-2">
+            <Clock className="h-5 w-5 text-[#FF8FA3]" />
+            <span className="text-[10px] text-[#8B7B8B]">อดอาหาร</span>
+          </Link>
+          <Link href="/dashboard/history" className="flex flex-col items-center gap-1 p-2">
+            <History className="h-5 w-5 text-[#8B7B8B]" />
+            <span className="text-[10px] text-[#8B7B8B]">ประวัติ</span>
+          </Link>
+          <Link href="/dashboard/statistics" className="flex flex-col items-center gap-1 p-2">
+            <BarChart3 className="h-5 w-5 text-[#8B7B8B]" />
+            <span className="text-[10px] text-[#8B7B8B]">สถิติ</span>
+          </Link>
+          <Link href="/dashboard/profile" className="flex flex-col items-center gap-1 p-2">
+            <User className="h-5 w-5 text-[#8B7B8B]" />
+            <span className="text-[10px] text-[#8B7B8B]">โปรไฟล์</span>
+          </Link>
+        </div>
+      </nav>
+    </div>
   );
 }
