@@ -14,12 +14,12 @@ export async function GET() {
 
     // TODO: Fetch from database
     return NextResponse.json({
-      goal: null,
+      entries: [],
     });
   } catch (error) {
-    console.error("Goals error:", error);
+    console.error("History error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch goals" },
+      { error: "Failed to fetch history" },
       { status: 500 }
     );
   }

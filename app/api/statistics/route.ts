@@ -12,14 +12,17 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // TODO: Fetch from database
+    // TODO: Calculate from database
     return NextResponse.json({
-      goal: null,
+      entries: [],
+      avgWeightLoss: 0,
+      totalFastingHours: 0,
+      longestFast: 0,
     });
   } catch (error) {
-    console.error("Goals error:", error);
+    console.error("Statistics error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch goals" },
+      { error: "Failed to fetch statistics" },
       { status: 500 }
     );
   }

@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -12,14 +12,19 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // TODO: Fetch from database
+    const data = await request.json();
+
+    // TODO: Save onboarding data to database
+    console.log("Onboarding data:", data);
+
     return NextResponse.json({
-      goal: null,
+      success: true,
+      message: "Onboarding completed",
     });
   } catch (error) {
-    console.error("Goals error:", error);
+    console.error("Onboarding error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch goals" },
+      { error: "Failed to complete onboarding" },
       { status: 500 }
     );
   }

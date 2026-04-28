@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function POST() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -12,14 +12,19 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // TODO: Fetch from database
-    return NextResponse.json({
-      goal: null,
+    // TODO: Generate PDF plan
+    const pdfContent = Buffer.from("PDF placeholder");
+
+    return new NextResponse(pdfContent, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "attachment; filename=fasting-plan.pdf",
+      },
     });
   } catch (error) {
-    console.error("Goals error:", error);
+    console.error("Plan generation error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch goals" },
+      { error: "Failed to generate plan" },
       { status: 500 }
     );
   }
