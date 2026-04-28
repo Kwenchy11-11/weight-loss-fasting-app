@@ -7,7 +7,14 @@ import { Clock, Bell, TrendingDown, Calculator, FileSpreadsheet, Apple, Sparkles
 import { authOptions } from "@/lib/auth";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
+  let session = null;
+  
+  try {
+    session = await getServerSession(authOptions);
+  } catch (error) {
+    console.error("Auth session error:", error);
+    // Continue without auth - user will see login prompt
+  }
 
   if (session) {
     redirect("/dashboard");
